@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.my.dao.UserDao">
+    <sql id="Base_Column_List">
+        user_id, user_Name, user_Password, user_Sex, user_Email
+    </sql>
+
+    <select id="getById" resultType="com.my.entity.User">
+        select
+            <include refid="Base_Column_List"/>
+        from t_user
+        where user_id=#{user_id}
+    </select>
+
+    <update id="set">
+        update t_user
+        set
+            user_Name = #{user_Name},
+            user_Password = #{user_Password},
+            user_Sex = #{user_Sex},
+            user_Email = #{user_Email}
+        where user_id = #{user_id}
+    </update>
+
+    <insert id="save">
+        insert into
+        t_user
+        (
+           user_Name,
+           user_Password,
+           user_Sex,
+           user_Email
+       )
+        values
+       (
+           #{user_Name},
+           #{user_Password},
+           #{user_Sex},
+           #{user_Email}
+       )
+    </insert>
+
+    <delete id="deleteById">
+        delete from t_user where user_id=#{user_id}
+    </delete>
+
+    <select id="find" resultType="com.my.entity.User">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            t_user
+        <where>
+            <if test="user_Name != null and user_Name != ''">
+                user_Name like '%' #{user_Name} '%'
+            </if>
+            <if test="user_Sex != null and user_Sex != ''">
+                and user_Sex like '%' #{user_Sex} '%'
+            </if>
+            <if test="user_Email != null and user_Email != ''">
+                and user_Email like '%' #{user_Email} '%'
+            </if>
+        </where>
+        order by user_id desc
+    </select>
+
+    <select id="getAll" resultType="com.my.entity.User">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            t_user
+        order by user_id desc
+    </select>
+
+    <select id="login" resultType="com.my.entity.User">
+        select
+            <include refid="Base_Column_List"/>
+        from
+             t_user
+        where
+              user_Name=#{user_Name} and user_Password=#{user_Password}
+    </select>
+
+    <insert id="register">
+        insert into t_user(user_Name, user_Password) values(#{myname}, #{mypwd})
+    </insert>
+</mapper>
