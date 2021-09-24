@@ -30,10 +30,10 @@
             $.ajax({
                 url : "user/save.do",
                 data : {
-                    "user_Name" : $("#create_username").val(),
-                    "user_Password" : $("#create_password").val(),
-                    "user_Sex" : $("#create_sex").val(),
-                    "user_Email" : $("#create_email").val()
+                    "user_Name" : $("#create_username").val().trim(),
+                    "user_Password" : $("#create_password").val().trim(),
+                    "user_Sex" : $("#create_sex").val().trim(),
+                    "user_Email" : $("#create_email").val().trim()
                 },
                 type : "post",
                 success : function ()
@@ -57,11 +57,11 @@
             $.ajax({
                 url : "user/set.do",
                 data : {
-                    "user_id" : $("#hidden_id").val(),
-                    "user_Name" : $("#update_username").val(),
-                    "user_Password" : $("#update_password").val(),
-                    "user_Sex" : $("#update_sex").val(),
-                    "user_Email" : $("#update_email").val()
+                    "user_id" : $("#hidden_id").val().trim(),
+                    "user_Name" : $("#update_username").val().trim(),
+                    "user_Password" : $("#update_password").val().trim(),
+                    "user_Sex" : $("#update_sex").val().trim(),
+                    "user_Email" : $("#update_email").val().trim()
                 },
                 type : "post",
                 dataType : "text",
@@ -99,9 +99,9 @@
         $.ajax({
             url : "user/find.do",
             data : {
-                "user_Name" : $("#hidden_username").val(),
-                "user_Sex" : $("#hidden_sex").val(),
-                "user_Email" : $("#hidden_email").val()
+                "user_Name" : $("#hidden_username").val().trim(),
+                "user_Sex" : $("#hidden_sex").val().trim(),
+                "user_Email" : $("#hidden_email").val().trim()
             },
             type : "post",
             dataType: "json",

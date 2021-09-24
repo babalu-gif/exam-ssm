@@ -87,8 +87,9 @@ public class UserController
         else
         {
             model.addAttribute("errmsg", "用户名或密码错误");
+            return "login";
         }
-        return "login";
+
     }
 
     // 用户注册
