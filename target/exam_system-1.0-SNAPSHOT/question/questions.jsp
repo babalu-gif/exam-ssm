@@ -38,12 +38,12 @@
             $.ajax({
                 url : "question/save.do",
                 data : {
-                    "title" : $("#create_title").val(),
-                    "optionA" : $("#create_optionA").val(),
-                    "optionB" : $("#create_optionB").val(),
-                    "optionC" : $("#create_optionC").val(),
-                    "optionD" : $("#create_optionD").val(),
-                    "answer" : $("#create_answer").val()
+                    "title" : $("#create_title").val().trim(),
+                    "optionA" : $("#create_optionA").val().trim(),
+                    "optionB" : $("#create_optionB").val().trim(),
+                    "optionC" : $("#create_optionC").val().trim(),
+                    "optionD" : $("#create_optionD").val().trim(),
+                    "answer" : $("#create_answer").val().trim()
                 },
                 type : "post",
                 success : function ()
