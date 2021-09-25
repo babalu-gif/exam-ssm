@@ -2,7 +2,7 @@
 
 本系统采用java语言（jdk1.8），mysql数据库
 
-本系统涉及html、css前端技术；ssm框架、jquery的异步刷新,jsp和JavaScript等后端技术
+本系统涉及html、css和JavaScript前端技术；ssm框架、jquery的异步刷新和等后端技术
 
 用户需要在resources文件夹下的jdbc.properties修改为自己的数据库名、同户名、密码
 
