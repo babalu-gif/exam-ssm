@@ -5,10 +5,7 @@
     String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + base;
 %>
 <html>
-<head>
-    <base href="<%=url%>">
-    <title>Title</title>
-</head>
+<head> </head>
 <body>
     <div>
         <div style="position: relative; left: 10px; top: -10px;">
@@ -21,10 +18,18 @@
     <div style="position: relative; top: -20px; left: 0px; width: 100%; height: 100%;">
         <div style="width: 100%; position: absolute;top: 5px; left: 10px;">
 
+            <div class="btn-toolbar" role="toolbar" style="height: 80px;" align="center">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">题目</div>
+                    </div>
+                </div>
+            </div>
 
-            <div style="position: relative;top: 10px;">
-                <form action="exam/getScore.do">
-                    <table border="2" style="text-align: center">
+
+            <div style="position: relative;top: 10px;" align="center">
+                <form action="getScore.do">
+                    <table border="2"  style="text-align: center">
                         <tr>
                             <td>试题编号</td>
                             <td>题目信息</td>
@@ -51,6 +56,7 @@
                                 </td>
                             </tr>
                         </c:forEach>
+
                         <tr>
                             <td align="center" colspan="3"><input type="submit" value="交卷"></td>
                             <td align="center" colspan="4"><input type="reset" value="重做"></td>
