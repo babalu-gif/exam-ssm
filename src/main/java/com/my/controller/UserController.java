@@ -59,15 +59,6 @@ public class UserController
     }
 
     // 根据条件查找用户
-    /*@ResponseBody
-    @RequestMapping(value = "/find.do")
-    public List<User> find(Integer page, Integer pageSize, User user)
-    {
-        //PageHelper.startPage(page, pageSize);
-        List<User> userList = userService.find(user);
-        //PageInfo<User> pageInfo = new PageInfo<>(userList);
-        return userList;
-    }*/
     @ResponseBody
     @RequestMapping(value = "/find.do")
     public PageInfo<User> find(Integer page, Integer pageSize, User user)
