@@ -11,6 +11,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="exam_system" target="1.8" />
+      <module name="test" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

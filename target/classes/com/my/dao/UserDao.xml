@@ -83,6 +83,6 @@
     </select>
 
     <insert id="register">
-        insert into t_user(user_Name, user_Password) values(#{myname}, #{mypwd})
+        insert into t_user(user_Name, user_Password, user_Sex, user_Email) values(#{myname}, #{mypwd}, '', '')
     </insert>
 </mapper>

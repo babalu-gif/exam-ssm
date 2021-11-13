@@ -6,6 +6,7 @@
 <html>
 <head>
     <base href="<%=url%>">
+    <script type="text/javascript" src="jquery/layer-3.5.1/layer.js"></script>
     <title>Title</title>
     <script type="text/javascript">
         function sub()
@@ -19,7 +20,7 @@
                 dataType : "text",
                 success : function (msg)
                 {
-                    alert(msg);
+                    layer.alert(msg, {icon:6});
                     $("#table").load("http://localhost:8080${pageContext.request.contextPath}/user/getAll.do #table");
                 }
             })

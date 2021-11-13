@@ -15,14 +15,35 @@
         <property name="username" value="${jdbc.username}"></property>
         <property name="password" value="${jdbc.password}"></property>
     </bean>
+
+    <!--
+		生成SqlSessionFactory
+		需要配置原先SqlMapConfig.xml中的功能
+	-->
+
     <!--配置mybatis工厂-->
     <bean class="org.mybatis.spring.SqlSessionFactoryBean">
         <!--配置数据源-->
-        <property name="dataSource" ref="dataSource"></property>
+        <property name="dataSource" ref="dataSource"/>
         <!--配置mybatis的核心配置文件-->
-        <property name="configLocation" value="classpath:mybatis.xml"></property>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
         <!--配置entity-->
         <property name="typeAliasesPackage" value="com.my.entity"></property>
+
+        <!--配置Mybatis分页插件:PageHelper-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <props>
+                            <!--dialect:数据库方言-->
+                            <prop key="dialect">mysql</prop>
+                            <prop key="supportMethodsArguments">true</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
     <!--配置dao所在的包-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

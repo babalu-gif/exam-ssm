@@ -1,5 +1,7 @@
 package com.my.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.my.entity.Question;
 import com.my.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +58,11 @@ public class QuestionController
     // 根据条件查询试题
     @ResponseBody
     @RequestMapping(value = "/find.do")
-    public List<Question> find(Question question)
+    public PageInfo<Question> find(Integer page, Integer pageSize, Question question)
     {
+        PageHelper.startPage(page, pageSize);
         List<Question> questionList = questionService.find(question);
-        return questionList;
+        PageInfo<Question> pageInfo = new PageInfo<>(questionList);
+        return pageInfo;
     }
 }

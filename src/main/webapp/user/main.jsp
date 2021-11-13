@@ -8,7 +8,7 @@
     <base href="<%=url%>">
     <link rel="stylesheet" href="css/bootstrap.css" />
     <link rel="stylesheet" href="css/index.css" />
-    <script type="text/javascript" src="jquery/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="jquery/bootstrap.js"></script>
     <title></title>
 
