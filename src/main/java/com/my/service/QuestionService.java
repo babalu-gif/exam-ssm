@@ -15,4 +15,6 @@ public interface QuestionService
     Question getById(Integer questionId);
 
     boolean update(Question question);
+
+    Integer delete(String[] ids);
 }

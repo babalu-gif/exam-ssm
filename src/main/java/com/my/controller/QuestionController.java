@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -37,7 +38,17 @@ public class QuestionController
         return question;
     }
 
-    // 删除试题
+    // 删除多个试题
+    @ResponseBody
+    @RequestMapping(value = "/delete.do")
+    public void delete(String ids)
+    {
+        String[] d = ids.split(",");
+        questionService.delete(d); //把数组里的值逗号隔开
+        return;
+    }
+
+    // 删除单个试题
     @ResponseBody
     @RequestMapping(value = "/deleteById.do")
     public void deleteById(Integer questionId)

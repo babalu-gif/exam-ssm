@@ -32,10 +32,58 @@
             /*
                 查询成功后，回到第一页，维持每页展示对的记录数
             */
-            refresh(1, $("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+            refresh(1, $("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
         })
 
-        // 为创建按钮绑定事件,打开创建试题的模态窗口
+        // 为删除按钮绑定事件,打开创建试题的模态窗口
+        $("#deleteBt").click(function ()
+        {
+            // 找到复选框所有挑√的复选框的jquery对象
+            var $xz = $("input[name=xz]:checked");
+            if($xz.length == 0)
+            {
+                layer.alert("请选择需要删除的记录", {icon:6});
+            }
+            else
+            {
+                var param = [];
+                for(var i = 0; i < $xz.length; i++)
+                {
+                    /*param += "id=" + $($xz[i]).val();
+                    // 如果不是最后一个元素
+                    if(i < $xz.length-1)
+                    {
+                        param += "&";
+                    }*/
+                    // 将查询出来的试题id以','分割放入数组中
+                    param.push($($xz[i]).val());
+                }
+
+                // confirm 取消不删除，确定开始执行删除操作
+                if(confirm("确定删除所选中的记录吗？"))
+                {
+                    $.ajax({
+                        url : "question/delete.do?ids="+param,
+                        type : "post",
+                        dataType : "text",
+                        success : function (data)
+                        {
+                            layer.alert("删除试题成功", {icon:6});
+                            /*
+                                删除成功后，回到第一页，维持每页展示对的记录数
+                            */
+                            refresh(1, $("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
+                        },
+                        error : function ()
+                        {
+                            layer.alert("删除试题失败", {icon:6});
+                        }
+                    })
+                }
+            }
+        })
+
+        // 为创建按钮绑定事件
         $("#addBt").click(function ()
         {
             $("#createQuestionModal").modal("show");
@@ -65,7 +113,7 @@
                     /*
                         添加成功后，回到第一页，维持每页展示对的记录数
                     */
-                    refresh(1, $("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+                    refresh(1, $("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
                 error : function ()
                 {
@@ -99,8 +147,8 @@
                     /*
 						修改操作后，应该维持在当前页，维持每页展示的记录数
 					*/
-                    refresh($("#activityPage").bs_pagination('getOption', 'currentPage')
-                        ,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+                    refresh($("#questionPage").bs_pagination('getOption', 'currentPage')
+                        ,$("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
                 error : function ()
                 {
@@ -109,10 +157,29 @@
             })
         })
 
+        // 为全选按钮触发事件
+        $("#qx").click(function ()
+        {
+            $("input[name=xz]").prop("checked", this.checked);
+        })
+
+        /*
+            动态生成的元素（不能以普通绑定事件的形式来进行操作），我们要以on方法的形式来触发事件
+            语法格式：$(需要绑定事件的外层元素).on("绑定事件的方式", 需要绑定的jquery对象, 回调函数)
+         */
+        $("#questionBody").on("click", $("input[name=xz]"), function ()
+        {
+            $("#qx").prop("checked", $("input[name=xz]").length==$("input[name=xz]:checked").length);
+        })
+
     })
+
 
     // 定义一个函数，发送请求不同页码对应的数据
     function refresh(page, pageSize) {
+        // 将全选按钮框的√去掉
+        $("#qx").prop("checked", false);
+
         // 将查询文本框的信息存储到隐藏域中，方便进行查询操作
         $("#hidden_title").val($("#search_title").val());
 
@@ -128,7 +195,8 @@
             var html = "";
             $.each(data.list, function (index, q) {
                 html += '<tr>';
-                html += '<td>' + q.questionId + '</td>';
+                html += '<td><input name="xz" type="checkbox" value="'+q.questionId+'"/></td>';
+                /*html += '<td>' + q.questionId + '</td>';*/
                 html += '<td>' + q.title + '</td>';
                 html += '<td>' + q.optionA + '</td>';
                 html += '<td>' + q.optionB + '</td>';
@@ -139,10 +207,10 @@
                 html += '<td><img src="images/xiugai.png"  alt="修改信息" onclick="updateById(' + q.questionId + ')"/></td>';
                 html += '</tr>';
             })
-            $("#questionBody").append(html);
+            $("#questionBody").html(html);
 
             //bootstrap的分页插件
-            $("#activityPage").bs_pagination({
+            $("#questionPage").bs_pagination({
                 currentPage: data.pageNum, // 页码
                 rowsPerPage: data.pageSize, // 每页显示的记录条数
                 maxRowsPerPage: 20, // 每页最多显示的记录条数
@@ -177,7 +245,7 @@
                     /*
                         删除成功后，回到第一页，维持每页展示对的记录数
                      */
-                    refresh(1, $("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+                    refresh(1, $("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
                 error: function () {
                     layer.alert("删除失败！", {icon:6});
@@ -243,6 +311,9 @@
 
         <div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
             <div class="btn-group" style="position: relative; top: 18%;">
+                <button type="button" class="btn btn-danger" id="deleteBt"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+            </div>
+            <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-primary" id="addBt"><span class="glyphicon glyphicon-plus"></span> 创建</button>
             </div>
         </div>
@@ -251,6 +322,7 @@
             <table class="table table-hover" style="text-align: center">
                 <thead>
                 <tr>
+                    <td><input type="checkbox" id="qx"/></td>
                     <td>题号</td>
                     <td>题目</td>
                     <td>A</td>
@@ -270,7 +342,7 @@
                 <nav>
                     <%--分页插件--%>
                     <div  style="height: 50px; position: relative;top: 30px;">
-                        <div id="activityPage"></div>
+                        <div id="questionPage"></div>
                     </div>
                 </nav>
             </footer>

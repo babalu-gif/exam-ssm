@@ -15,4 +15,6 @@ public interface QuestionDao
     Question getById(Integer questionId);
 
     int update(Question question);
+
+    Integer delete(String[] ids);
 }

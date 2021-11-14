@@ -7,6 +7,15 @@
         questionId, title, optionA, optionB, optionC, optionD, answer
     </sql>
 
+    <delete id="delete">
+        delete
+            from t_question
+        where questionId in
+        <foreach collection="array" index="no" item="ids" open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+    </delete>
+
     <update id="update">
         update t_question
         set
