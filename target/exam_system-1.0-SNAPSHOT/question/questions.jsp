@@ -42,7 +42,7 @@
             var $xz = $("input[name=xz]:checked");
             if($xz.length == 0)
             {
-                layer.alert("请选择需要删除的记录", {icon:6});
+                layer.alert("请选择需要删除的记录", {icon:0});
             }
             else
             {
@@ -76,7 +76,7 @@
                         },
                         error : function ()
                         {
-                            layer.alert("删除试题失败", {icon:6});
+                            layer.alert("删除试题失败", {icon:2});
                         }
                     })
                 }
@@ -117,7 +117,7 @@
                 },
                 error : function ()
                 {
-                    layer.alert("添加试题失败！", {icon:6});
+                    layer.alert("添加试题失败！", {icon:2});
                 }
             })
         })
@@ -152,7 +152,7 @@
                 },
                 error : function ()
                 {
-                    layer.alert("添加试题失败！", {icon:6});
+                    layer.alert("添加试题失败！", {icon:2});
                 }
             })
         })
@@ -248,7 +248,7 @@
                     refresh(1, $("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
                 error: function () {
-                    layer.alert("删除失败！", {icon:6});
+                    layer.alert("删除失败！", {icon:2});
                 }
             })
         }
@@ -323,7 +323,6 @@
                 <thead>
                 <tr>
                     <td><input type="checkbox" id="qx"/></td>
-                    <td>题号</td>
                     <td>题目</td>
                     <td>A</td>
                     <td>B</td>

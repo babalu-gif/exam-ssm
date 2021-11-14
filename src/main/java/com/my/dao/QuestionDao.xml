@@ -11,7 +11,7 @@
         delete
             from t_question
         where questionId in
-        <foreach collection="array" index="no" item="ids" open="(" close=")" separator=",">
+        <foreach collection="array" item="ids" open="(" close=")" separator=",">
             #{ids}
         </foreach>
     </delete>

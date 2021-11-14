@@ -22,4 +22,6 @@ public interface UserDao
     User getById(Integer user_id);
 
     int set(User user);
+
+    Integer delete(String[] ids);
 }

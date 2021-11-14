@@ -31,7 +31,6 @@
                 <form action="getScore.do">
                     <table border="2"  style="text-align: center">
                         <tr>
-                            <td>试题编号</td>
                             <td>题目信息</td>
                             <td>A</td>
                             <td>B</td>
@@ -42,7 +41,6 @@
 
                         <c:forEach items="${questionList}" var="question">
                             <tr>
-                                <td>${question.questionId}</td>
                                 <td>${question.title}</td>
                                 <td>${question.optionA}</td>
                                 <td>${question.optionB}</td>

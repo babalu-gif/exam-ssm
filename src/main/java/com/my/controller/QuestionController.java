@@ -43,6 +43,7 @@ public class QuestionController
     @RequestMapping(value = "/delete.do")
     public void delete(String ids)
     {
+        // 将字符串以','分割保存到数组中
         String[] d = ids.split(",");
         questionService.delete(d); //把数组里的值逗号隔开
         return;

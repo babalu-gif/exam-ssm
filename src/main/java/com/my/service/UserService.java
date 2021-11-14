@@ -21,4 +21,6 @@ public interface UserService
     User getById(Integer user_id);
 
     boolean set(User user);
+
+    Integer delete(String[] ids);
 }

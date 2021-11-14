@@ -15,13 +15,6 @@ public class QuestionServiceImpl implements QuestionService
     private QuestionDao questionDao;
 
     @Override
-    public Integer delete(String[] ids)
-    {
-        // 删除试题信息
-        return questionDao.delete(ids);
-    }
-
-    @Override
     public boolean update(Question question)
     {
         boolean flag = true;
@@ -38,6 +31,13 @@ public class QuestionServiceImpl implements QuestionService
     {
         Question question = questionDao.getById(questionId);
         return question;
+    }
+
+    @Override
+    public Integer delete(String[] ids)
+    {
+        // 删除试题信息
+        return questionDao.delete(ids);
     }
 
     @Override

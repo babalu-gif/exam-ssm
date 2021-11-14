@@ -46,6 +46,12 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
+    public Integer delete(String[] ids)
+    {
+        return userDao.delete(ids);
+    }
+
+    @Override
     public boolean deleteById(Integer user_id)
     {
         boolean flag = true;

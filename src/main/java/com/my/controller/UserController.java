@@ -49,7 +49,18 @@ public class UserController
         return;
     }
 
-    // 删除用户
+    // 删除多个用户
+    @ResponseBody
+    @RequestMapping(value = "/delete.do")
+    public void deleteById(String ids)
+    {
+        // 将字符串以','分割保存到数组中
+        String[] d = ids.split(",");
+        userService.delete(d);
+        return;
+    }
+
+    // 删除单个用户
     @ResponseBody
     @RequestMapping(value = "/deleteById.do")
     public void deleteById(Integer user_id)
