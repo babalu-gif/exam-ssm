@@ -55,7 +55,7 @@
                 },
                 error : function ()
                 {
-                    layer.alert("添加用户失败！", {icon:6});
+                    layer.alert("添加用户失败！", {icon:2});
                 }
             })
         })
@@ -88,7 +88,7 @@
                 },
                 error : function ()
                 {
-                    layer.alert("修改用户失败！", {icon:6});
+                    layer.alert("修改用户失败！", {icon:2});
                 }
             })
         })
@@ -101,10 +101,68 @@
             refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
 
         })
+
+        // 为删除按钮绑定事件
+        $("#deleteBt").click(function (){
+            // 找到复选框所有挑√的复选框的jquery对象
+            var $xz = $("input[name=xz]:checked");
+            if($xz.length == 0)
+            {
+                layer.alert("请选择需要删除的记录", {icon:0});
+            }
+            else
+            {
+                var param = [];
+                for(var i = 0; i < $xz.length; i++)
+                {
+                    // 将查询出来的试题id以','分割放入数组中
+                    param.push($($xz[i]).val());
+                }
+                // confirm 取消不删除，确定开始执行删除操作
+                if(confirm("确定删除所选中的记录吗？"))
+                {
+                    $.ajax({
+                        url : "user/delete.do?ids="+param,
+                        type : "post",
+                        dataType : "text",
+                        success : function (data)
+                        {
+                            layer.alert("删除用户成功", {icon:6});
+                            /*
+                                删除成功后，回到第一页，维持每页展示对的记录数
+                            */
+                            refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
+                        },
+                        error : function ()
+                        {
+                            layer.alert("删除用户失败", {icon:2});
+                        }
+                    })
+                }
+            }
+        })
+
+        // 为全选按钮触发事件
+        $("#qx").click(function ()
+        {
+            $("input[name=xz]").prop("checked", this.checked);
+        })
+
+        /*
+            动态生成的元素（不能以普通绑定事件的形式来进行操作），我们要以on方法的形式来触发事件
+            语法格式：$(需要绑定事件的外层元素).on("绑定事件的方式", 需要绑定的jquery对象, 回调函数)
+         */
+        $("#userBody").on("click", $("input[name=xz]"), function ()
+        {
+            $("#qx").prop("checked", $("input[name=xz]").length==$("input[name=xz]:checked").length);
+        })
     })
 
     // 定义一个函数，发送请求不同页码对应的数据
     function refresh(page, pageSize) {
+        // 将全选按钮框的√去掉
+        $("#qx").prop("checked", false);
+
         // 将查询文本框的信息存储到隐藏域中，方便进行查询操作
         $("#hidden_username").val($("#search_username").val());
         $("#hidden_sex").val($("#search_sex").val());
@@ -125,6 +183,7 @@
             $.each(data.list, function(index, u)
             {
                 html += '<tr>';
+                html += '<td><input name="xz" type="checkbox" value="'+u.user_id+'"/></td>';
                 html += '<td>'+u.user_Name+'</td>';
                 html += '<td>'+u.user_Password+'</td>';
                 html += '<td>'+u.user_Sex+'</td>';
@@ -201,7 +260,7 @@
                 },
                 error : function ()
                 {
-                    layer.alert("删除失败！", {icon:6});
+                    layer.alert("删除失败！", {icon:2});
                 }
             })
         }
@@ -254,6 +313,9 @@
 
         <div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
             <div class="btn-group" style="position: relative; top: 18%;">
+                <button type="button" class="btn btn-danger" id="deleteBt"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+            </div>
+            <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-primary" id="addBt"><span class="glyphicon glyphicon-plus"></span> 创建</button>
             </div>
         </div>
@@ -263,6 +325,7 @@
             <table class="table table-hover" style="text-align: center">
                 <thead>
                 <tr>
+                    <td><input type="checkbox" id="qx"/></td>
                     <td>用户名</td>
                     <td>密码</td>
                     <td>性别</td>

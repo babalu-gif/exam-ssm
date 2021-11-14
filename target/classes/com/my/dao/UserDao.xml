@@ -7,6 +7,15 @@
         user_id, user_Name, user_Password, user_Sex, user_Email
     </sql>
 
+    <delete id="delete">
+        delete
+        from t_user
+        where user_id in
+        <foreach collection="array" item="ids" open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+    </delete>
+
     <select id="getById" resultType="com.my.entity.User">
         select
             <include refid="Base_Column_List"/>
