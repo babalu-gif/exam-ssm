@@ -156,6 +156,31 @@
         {
             $("#qx").prop("checked", $("input[name=xz]").length==$("input[name=xz]:checked").length);
         })
+
+        // 为“批量导出”按钮绑定单击事件
+        $("#exportUserAllBtn").click(function (){
+            // 发送同步请求
+            window.location.href="user/exportAllUsers.do";
+        })
+
+        // 为“批选择导出”按钮绑定单击事件
+        $("#exportUserCheckedBtn").click(function (){
+            // 找到复选框所有挑√的复选框的jquery对象
+            var $check = $("input[name=xz]:checked");
+            if ($check.length == 0){
+                layer.alert("请选择需要导出的用户", {icon:7})
+            } else {
+                var param = [];
+                for(var i = 0; i < $check.length; i++)
+                {
+                    // 将勾选的出来的用户id以','分割放入数组中
+                    param.push($($check[i]).val());
+                }
+                // 发送同步请求
+                window.location.href="user/exportCheckedUsers.do?id="+param;
+            }
+
+        })
     })
 
     // 定义一个函数，发送请求不同页码对应的数据
@@ -317,6 +342,11 @@
             </div>
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-primary" id="addBt"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+            </div>
+            <div class="btn-group" style="position: relative; top: 18%;">
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
+                <button id="exportUserAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（批量导出）</button>
+                <button id="exportUserCheckedBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（选择导出）</button>
             </div>
         </div>
 

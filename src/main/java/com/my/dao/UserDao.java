@@ -24,4 +24,8 @@ public interface UserDao
     int set(User user);
 
     Integer delete(String[] ids);
+
+    List<User> findAllUsers();
+
+    List<User> findUsersByIds(String[] ids);
 }

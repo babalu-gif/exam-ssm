@@ -95,4 +95,14 @@ public class UserServiceImpl implements UserService
         }
         return flag;
     }
+
+    @Override
+    public List<User> findAllUsers() {
+        return userDao.findAllUsers();
+    }
+
+    @Override
+    public List<User> findUsersByIds(String[] ids) {
+        return userDao.findUsersByIds(ids);
+    }
 }

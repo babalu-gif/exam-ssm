@@ -23,4 +23,8 @@ public interface UserService
     boolean set(User user);
 
     Integer delete(String[] ids);
+
+    List<User> findAllUsers();
+
+    List<User> findUsersByIds(String[] ids);
 }

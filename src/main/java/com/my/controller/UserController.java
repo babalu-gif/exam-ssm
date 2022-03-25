@@ -4,6 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.my.entity.User;
 import com.my.service.UserService;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 @Controller
@@ -121,5 +128,105 @@ public class UserController
             model.addAttribute("is", "注册失败");
         }
         return "register";
+    }
+
+    @RequestMapping("/exportAllUsers.do")
+    public void exportCheckedUsers(HttpServletResponse response) throws IOException {
+        // 调用service层方法，查询勾选的市场活动
+        List<User> userList = userService.findAllUsers();
+        // 创建excel文件，并且把activityList写入到excel文件中
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet("用户信息列表");
+        HSSFRow row = sheet.createRow(0);
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("ID");
+        cell = row.createCell(1);
+        cell.setCellValue("用户名");
+        cell = row.createCell(2);
+        cell.setCellValue("密码");
+        cell = row.createCell(3);
+        cell.setCellValue("性别");
+        cell = row.createCell(4);
+        cell.setCellValue("邮箱");
+
+        if (userList != null && userList.size() > 0){
+            User user = null;
+            // 遍历activityList，创建HSSFRow对象，生成所有数据行
+            for (int i = 0; i < userList.size(); i++){
+                user = userList.get(i);
+                // 每遍历一个activity，生成一行
+                row = sheet.createRow(i+1);
+                cell = row.createCell(0);
+                cell.setCellValue(user.getUser_id());
+                cell = row.createCell(1);
+                cell.setCellValue(user.getUser_Name());
+                cell = row.createCell(2);
+                cell.setCellValue(user.getUser_Password());
+                cell = row.createCell(3);
+                cell.setCellValue(user.getUser_Sex());
+                cell = row.createCell(4);
+                cell.setCellValue(user.getUser_Email());
+            }
+        }
+
+        // 把生成的excel文件下载到客户端
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.addHeader("Content-Disposition", "attachment;filename=userList.xls");
+        OutputStream out = response.getOutputStream();
+
+        wb.write(out);
+
+        wb.close();
+        out.flush();
+    }
+
+    @RequestMapping("/exportCheckedUsers.do")
+    public void exportCheckedUsers(HttpServletResponse response, String[] id) throws IOException {
+        // 调用service层方法，查询勾选的市场活动
+        List<User> userList = userService.findUsersByIds(id);
+        // 创建excel文件，并且把activityList写入到excel文件中
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet("用户信息列表");
+        HSSFRow row = sheet.createRow(0);
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("ID");
+        cell = row.createCell(1);
+        cell.setCellValue("用户名");
+        cell = row.createCell(2);
+        cell.setCellValue("密码");
+        cell = row.createCell(3);
+        cell.setCellValue("性别");
+        cell = row.createCell(4);
+        cell.setCellValue("邮箱");
+
+        if (userList != null && userList.size() > 0){
+            User user = null;
+            // 遍历activityList，创建HSSFRow对象，生成所有数据行
+            for (int i = 0; i < userList.size(); i++){
+                user = userList.get(i);
+                // 每遍历一个activity，生成一行
+                row = sheet.createRow(i+1);
+                cell = row.createCell(0);
+                cell.setCellValue(user.getUser_id());
+                cell = row.createCell(1);
+                cell.setCellValue(user.getUser_Name());
+                cell = row.createCell(2);
+                cell.setCellValue(user.getUser_Password());
+                cell = row.createCell(3);
+                cell.setCellValue(user.getUser_Sex());
+                cell = row.createCell(4);
+                cell.setCellValue(user.getUser_Email());
+            }
+        }
+
+        // 把生成的excel文件下载到客户端
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.addHeader("Content-Disposition", "attachment;filename=userList.xls");
+        OutputStream out = response.getOutputStream();
+
+        wb.write(out);
+
+        wb.close();
+        out.flush();
     }
 }

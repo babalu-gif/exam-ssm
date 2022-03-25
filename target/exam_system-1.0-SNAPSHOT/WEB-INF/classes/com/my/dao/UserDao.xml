@@ -94,4 +94,19 @@
     <insert id="register">
         insert into t_user(user_Name, user_Password, user_Sex, user_Email) values(#{myname}, #{mypwd}, '', '')
     </insert>
+
+    <select id="findAllUsers" resultType="com.my.entity.User">
+        select <include refid="Base_Column_List"/>
+        from t_user
+    </select>
+
+    <select id="findUsersByIds" resultType="com.my.entity.User">
+        select <include refid="Base_Column_List"/>
+        from t_user
+        where user_id in
+        <foreach collection="array" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        order by user_id asc
+    </select>
 </mapper>
