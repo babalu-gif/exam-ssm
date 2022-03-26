@@ -27,4 +27,6 @@ public interface UserService
     List<User> findAllUsers();
 
     List<User> findUsersByIds(String[] ids);
+
+    int saveUsers(List<User> userList);
 }

@@ -2,8 +2,10 @@ package com.my.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.my.entity.ReturnObject;
 import com.my.entity.User;
 import com.my.service.UserService;
+import com.my.utils.HSSFUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -13,13 +15,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -228,5 +232,51 @@ public class UserController
 
         wb.close();
         out.flush();
+    }
+
+    @RequestMapping("/importUser.do")
+    @ResponseBody
+    public Object importActivity(MultipartFile userFile){
+        ReturnObject returnObject = new ReturnObject();
+
+        try {
+            InputStream is = userFile.getInputStream();
+            HSSFWorkbook wb = new HSSFWorkbook(is);
+            HSSFSheet sheet = wb.getSheetAt(0); // 页的下标，下标从0开始，依次递增
+            // 根据sheet获取HSSFRow对象，封装了一行所有的信息
+            HSSFRow row = null;
+            HSSFCell cell = null;
+            User user = null;
+            List<User> userList = new ArrayList<>();
+            for (int i = 1; i <= sheet.getLastRowNum(); i++){
+                row = sheet.getRow(i);  // 行的下标，下标从0开始，依次增加
+                user = new User();
+                for (int j = 0; j < row.getLastCellNum(); j++){
+                    cell = row.getCell(j); // 列的下标，下标从0开始，依次增加
+                    // 获取列中的数据
+                    String cellValue = HSSFUtils.getCellValueForStr(cell);
+                    if (j == 1){
+                        user.setUser_Name(cellValue);
+                    } else if (j == 2){
+                        user.setUser_Password(cellValue);
+                    } else if (j == 3){
+                        user.setUser_Sex(cellValue);
+                    } else if (j == 4){
+                        user.setUser_Email(cellValue);
+                    }
+                }
+                // 每一行中所有列封装完之后，把activity保存到list中
+                userList.add(user);
+            }
+
+            // 调用service层方法，保存市场活动
+            int result = userService.saveUsers(userList);
+            returnObject.setCode("1");
+            returnObject.setMessage("成功导入"+result+"条数据");
+        } catch (Exception e){
+            returnObject.setCode("0");
+            returnObject.setMessage("系统忙，请稍后重试...");
+        }
+        return returnObject;
     }
 }

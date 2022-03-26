@@ -179,9 +179,52 @@
                 // 发送同步请求
                 window.location.href="user/exportCheckedUsers.do?id="+param;
             }
-
         })
-    })
+
+        // 给“导入”按钮添加单击事件
+        $("#importUserBtn").click(function (){
+            // 收集参数
+            var userFileName = $("#userFile").val();
+            var type = userFileName.substr(userFileName.lastIndexOf(".")+1).toLowerCase(); // xls,XLS,Xls...
+            if (type != "xls"){
+                layer.alert("请选择xls文件类型的文件", {icon:7});
+                return;
+            }
+
+            var userFile = $("#userFile")[0].files[0];
+            if (userFile.size > (5*1024*1024)){
+                layer.alert("文件大小不能超过5MB", {icon:7});
+                return;
+            }
+
+            // FormData是ajax提供的接口，可以模拟键值对向后台提交参数
+            // ForData最大的优势是不仅可以提交文本数据，还可以提交二进制数据
+            var formData = new FormData();
+            formData.append("userFile", userFile);
+            // 发送请求
+            $.ajax({
+                url:"user/importUser.do",
+                data:formData,
+                type:"post",
+                dataType:"json",
+                processData: false, // processData处理数据
+                contentType: false, // contentType发送数据的格式
+                success:function (data){
+                    if (data.code == "1"){
+                        layer.alert(data.message, {icon:6});
+                        // 关闭模态窗口
+                        $("#importUserModal").modal("hide");
+                        refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
+                    } else {
+                        layer.alert(data.message, {icon:5});
+                    }
+                }
+            })
+        })
+
+
+    });
+
 
     // 定义一个函数，发送请求不同页码对应的数据
     function refresh(page, pageSize) {
@@ -344,7 +387,7 @@
                 <button type="button" class="btn btn-primary" id="addBt"><span class="glyphicon glyphicon-plus"></span> 创建</button>
             </div>
             <div class="btn-group" style="position: relative; top: 18%;">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importUserModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
                 <button id="exportUserAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（批量导出）</button>
                 <button id="exportUserCheckedBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（选择导出）</button>
             </div>
@@ -488,6 +531,42 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary" id="updateBt">修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 导入市场活动的模态窗口 -->
+<div class="modal fade" id="importUserModal" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 85%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">导入用户</h4>
+            </div>
+            <div class="modal-body" style="height: 350px;">
+                <div style="position: relative;top: 20px; left: 50px;">
+                    请选择要上传的文件：<small style="color: gray;">[仅支持.xls]</small>
+                </div>
+                <div style="position: relative;top: 40px; left: 50px;">
+                    <input type="file" id="userFile">
+                </div>
+                <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;" >
+                    <h3>重要提示</h3>
+                    <ul>
+                        <li>操作仅针对Excel，仅支持后缀名为XLS的文件。</li>
+                        <li>给定文件的第一行将视为字段名。</li>
+                        <li>请确认您的文件大小不超过5MB。</li>
+                        <li>默认情况下，字符编码是UTF-8 (统一码)，请确保您导入的文件使用的是正确的字符编码方式。</li>
+                        <li>建议您在导入真实数据之前用测试文件测试文件导入功能。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="importUserBtn" type="button" class="btn btn-primary">导入</button>
             </div>
         </div>
     </div>

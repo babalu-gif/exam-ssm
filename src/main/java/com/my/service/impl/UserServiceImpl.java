@@ -105,4 +105,9 @@ public class UserServiceImpl implements UserService
     public List<User> findUsersByIds(String[] ids) {
         return userDao.findUsersByIds(ids);
     }
+
+    @Override
+    public int saveUsers(List<User> userList) {
+        return userDao.saveUsers(userList);
+    }
 }

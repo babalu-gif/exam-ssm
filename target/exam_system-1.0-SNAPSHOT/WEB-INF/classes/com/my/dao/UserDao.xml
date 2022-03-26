@@ -109,4 +109,12 @@
         </foreach>
         order by user_id asc
     </select>
+
+    <insert id="saveUsers" parameterType="com.my.entity.User">
+        insert into t_user(user_Name, user_Password, user_Sex, user_Email)
+        values
+        <foreach collection="list" item="user" separator=",">
+            (#{user.user_Name}, #{user.user_Password}, #{user.user_Sex}, #{user.user_Email})
+        </foreach>
+    </insert>
 </mapper>

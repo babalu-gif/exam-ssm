@@ -28,4 +28,6 @@ public interface UserDao
     List<User> findAllUsers();
 
     List<User> findUsersByIds(String[] ids);
+
+    int saveUsers(List<User> userList);
 }
