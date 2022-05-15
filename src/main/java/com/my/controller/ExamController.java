@@ -13,14 +13,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/exam")
-public class ExamController
-{
+public class ExamController {
     @Autowired
     private ExamService questionService;
 
     @RequestMapping(value = "/exam.do")
-    public String getRandQuestion(HttpServletRequest request)
-    {
+    public String getRandQuestion(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         List<Question> questionList = questionService.getRand();
         session.setAttribute("questionList", questionList);
@@ -28,21 +26,18 @@ public class ExamController
     }
 
     @RequestMapping(value = "/getScore.do")
-    public String getScore(HttpServletRequest request)
-    {
+    public String getScore(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         // 从当前用户私人储物柜得到系统提供的四种题目信息
         List<Question> questions = (List<Question>) session.getAttribute("questionList");
 
         int score = 0;
-        for(Question question : questions)
-        {
+        for(Question question : questions) {
             Integer questionId = question.getQuestionId();
             String answer = question.getAnswer();
             String userAnswer = request.getParameter("answer_"+questionId);
             // 判分
-            if(answer.equals(userAnswer)) // 防止用户不选择，出现空指针异常
-            {
+            if(answer.equals(userAnswer)) { // 防止用户不选择，出现空指针异常
                 score += 25;
             }
         }

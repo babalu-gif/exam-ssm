@@ -9,8 +9,7 @@
     <script type="text/javascript" src="jquery/layer-3.5.1/layer.js"></script>
     <title>Title</title>
     <script type="text/javascript">
-        function sub()
-        {
+        function sub() {
             $.ajax({
                 url : "user/add.do",
                 data: {
@@ -18,8 +17,7 @@
                 },
                 type : "post",
                 dataType : "text",
-                success : function (msg)
-                {
+                success : function (msg) {
                     layer.alert(msg, {icon:6});
                     $("#table").load("http://localhost:8080${pageContext.request.contextPath}/user/getAll.do #table");
                 }

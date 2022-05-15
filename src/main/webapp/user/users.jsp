@@ -41,8 +41,7 @@
                     "user_Email" : $("#create_email").val().trim()
                 },
                 type : "post",
-                success : function ()
-                {
+                success : function () {
                     layer.alert("添加用户成功！", {icon:6});
                     // 清空添加模态窗口的数据
                     $("#userAddForm")[0].reset();
@@ -53,8 +52,7 @@
                     */
                     refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
-                error : function ()
-                {
+                error : function () {
                     layer.alert("添加用户失败！", {icon:2});
                 }
             })
@@ -73,8 +71,7 @@
                 },
                 type : "post",
                 dataType : "text",
-                success : function ()
-                {
+                success : function () {
                     layer.alert("修改用户成功！", {icon:6});
                     // 清空添加模态窗口的数据
                     $("#userUpdateForm")[0].reset();
@@ -86,8 +83,7 @@
                     refresh($("#userPage").bs_pagination('getOption', 'currentPage')
                         ,$("#userPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
-                error : function ()
-                {
+                error : function () {
                     layer.alert("修改用户失败！", {icon:2});
                 }
             })
@@ -110,31 +106,26 @@
             {
                 layer.alert("请选择需要删除的记录", {icon:0});
             }
-            else
-            {
+            else {
                 var param = [];
-                for(var i = 0; i < $xz.length; i++)
-                {
+                for(var i = 0; i < $xz.length; i++) {
                     // 将查询出来的试题id以','分割放入数组中
                     param.push($($xz[i]).val());
                 }
                 // confirm 取消不删除，确定开始执行删除操作
-                if(confirm("确定删除所选中的记录吗？"))
-                {
+                if(confirm("确定删除所选中的记录吗？")) {
                     $.ajax({
                         url : "user/delete.do?ids="+param,
                         type : "post",
                         dataType : "text",
-                        success : function (data)
-                        {
+                        success : function (data) {
                             layer.alert("删除用户成功", {icon:6});
                             /*
                                 删除成功后，回到第一页，维持每页展示对的记录数
                             */
                             refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
                         },
-                        error : function ()
-                        {
+                        error : function () {
                             layer.alert("删除用户失败", {icon:2});
                         }
                     })
@@ -143,8 +134,7 @@
         })
 
         // 为全选按钮触发事件
-        $("#qx").click(function ()
-        {
+        $("#qx").click(function () {
             $("input[name=xz]").prop("checked", this.checked);
         })
 
@@ -152,8 +142,7 @@
             动态生成的元素（不能以普通绑定事件的形式来进行操作），我们要以on方法的形式来触发事件
             语法格式：$(需要绑定事件的外层元素).on("绑定事件的方式", 需要绑定的jquery对象, 回调函数)
          */
-        $("#userBody").on("click", $("input[name=xz]"), function ()
-        {
+        $("#userBody").on("click", $("input[name=xz]"), function () {
             $("#qx").prop("checked", $("input[name=xz]").length==$("input[name=xz]:checked").length);
         })
 
@@ -171,8 +160,7 @@
                 layer.alert("请选择需要导出的用户", {icon:7})
             } else {
                 var param = [];
-                for(var i = 0; i < $check.length; i++)
-                {
+                for(var i = 0; i < $check.length; i++) {
                     // 将勾选的出来的用户id以','分割放入数组中
                     param.push($($check[i]).val());
                 }
@@ -283,8 +271,7 @@
         }, "json")
     }
 
-    function updateById(user_id)
-    {
+    function updateById(user_id) {
         $.ajax({
             url : "user/getById.do",
             data : {
@@ -292,8 +279,7 @@
             },
             type : "get",
             dataType : "json",
-            success : function (data)
-            {
+            success : function (data) {
                 // 把查询出的数据存储到将要更新的域中
                 $("#hidden_id").val(data.user_id);
                 $("#update_username").val(data.user_Name);
@@ -307,10 +293,8 @@
         $("#updateUserModal").modal("show");
     }
 
-    function deleteById(user_id)
-    {
-        if(confirm("您确定删除吗？"))
-        {
+    function deleteById(user_id) {
+        if(confirm("您确定删除吗？")) {
             $.ajax({
                 url : "user/deleteById.do",
                 data: {
@@ -318,16 +302,14 @@
                 },
                 type : "post",
                 dataType : "text",
-                success : function ()
-                {
+                success : function () {
                     layer.alert("删除成功！", {icon:6});
                     /*
                         删除成功后，回到第一页，维持每页展示对的记录数
                      */
                     refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
-                error : function ()
-                {
+                error : function () {
                     layer.alert("删除失败！", {icon:2});
                 }
             })
@@ -536,7 +518,7 @@
     </div>
 </div>
 
-<!-- 导入市场活动的模态窗口 -->
+<!-- 导入用户的模态窗口 -->
 <div class="modal fade" id="importUserModal" role="dialog">
     <div class="modal-dialog" role="document" style="width: 85%;">
         <div class="modal-content">

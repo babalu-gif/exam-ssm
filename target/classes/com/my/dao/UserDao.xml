@@ -95,6 +95,12 @@
         insert into t_user(user_Name, user_Password, user_Sex, user_Email) values(#{myname}, #{mypwd}, '', '')
     </insert>
 
+    <select id="findUserByName" resultType="com.my.entity.User">
+        select <include refid="Base_Column_List"/>
+        from t_user
+        where user_Name=#{name}
+    </select>
+
     <select id="findAllUsers" resultType="com.my.entity.User">
         select <include refid="Base_Column_List"/>
         from t_user

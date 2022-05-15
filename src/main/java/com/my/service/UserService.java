@@ -4,8 +4,7 @@ import com.my.entity.User;
 
 import java.util.List;
 
-public interface UserService
-{
+public interface UserService {
     User login(User u);
 
     boolean register(String myname, String mypwd);

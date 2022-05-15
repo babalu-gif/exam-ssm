@@ -4,7 +4,6 @@ import com.my.entity.Question;
 
 import java.util.List;
 
-public interface ExamService
-{
+public interface ExamService {
     List<Question> getRand();
 }

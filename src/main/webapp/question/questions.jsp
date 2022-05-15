@@ -27,8 +27,7 @@
         refresh(1, 2);
 
         // 为查询按钮绑定事件
-        $("#search_Bt").click(function ()
-        {
+        $("#search_Bt").click(function () {
             /*
                 查询成功后，回到第一页，维持每页展示对的记录数
             */
@@ -40,15 +39,13 @@
         {
             // 找到复选框所有挑√的复选框的jquery对象
             var $xz = $("input[name=xz]:checked");
-            if($xz.length == 0)
-            {
+            if($xz.length == 0) {
                 layer.alert("请选择需要删除的记录", {icon:0});
             }
             else
             {
                 var param = [];
-                for(var i = 0; i < $xz.length; i++)
-                {
+                for(var i = 0; i < $xz.length; i++) {
                     /*param += "id=" + $($xz[i]).val();
                     // 如果不是最后一个元素
                     if(i < $xz.length-1)
@@ -60,22 +57,19 @@
                 }
 
                 // confirm 取消不删除，确定开始执行删除操作
-                if(confirm("确定删除所选中的记录吗？"))
-                {
+                if(confirm("确定删除所选中的记录吗？")) {
                     $.ajax({
                         url : "question/delete.do?ids="+param,
                         type : "post",
                         dataType : "text",
-                        success : function (data)
-                        {
+                        success : function (data) {
                             layer.alert("删除试题成功", {icon:6});
                             /*
                                 删除成功后，回到第一页，维持每页展示对的记录数
                             */
                             refresh(1, $("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
                         },
-                        error : function ()
-                        {
+                        error : function () {
                             layer.alert("删除试题失败", {icon:2});
                         }
                     })
@@ -84,14 +78,12 @@
         })
 
         // 为创建按钮绑定事件
-        $("#addBt").click(function ()
-        {
+        $("#addBt").click(function () {
             $("#createQuestionModal").modal("show");
         })
 
         // 为保存按钮绑定事件，执行新建试题操作
-        $("#saveBt").click(function ()
-        {
+        $("#saveBt").click(function () {
             $.ajax({
                 url : "question/save.do",
                 data : {
@@ -103,8 +95,7 @@
                     "answer" : $("#create_answer").val().trim()
                 },
                 type : "post",
-                success : function ()
-                {
+                success : function () {
                     layer.alert("添加试题成功", {icon:6});
                     // 清空添加模态窗口的数据
                     $("#questionAddForm")[0].reset();
@@ -115,8 +106,7 @@
                     */
                     refresh(1, $("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
-                error : function ()
-                {
+                error : function () {
                     layer.alert("添加试题失败！", {icon:2});
                 }
             })
@@ -136,8 +126,7 @@
                     "answer" : $("#update_answer").val().trim()
                 },
                 type : "post",
-                success : function ()
-                {
+                success : function () {
                     layer.alert("修改试题成功！", {icon:6});
                     // 清空修改模态窗口的数据
                     $("#questionUpdateForm")[0].reset();
@@ -150,16 +139,14 @@
                     refresh($("#questionPage").bs_pagination('getOption', 'currentPage')
                         ,$("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
                 },
-                error : function ()
-                {
+                error : function () {
                     layer.alert("添加试题失败！", {icon:2});
                 }
             })
         })
 
         // 为全选按钮触发事件
-        $("#qx").click(function ()
-        {
+        $("#qx").click(function () {
             $("input[name=xz]").prop("checked", this.checked);
         })
 
@@ -167,12 +154,75 @@
             动态生成的元素（不能以普通绑定事件的形式来进行操作），我们要以on方法的形式来触发事件
             语法格式：$(需要绑定事件的外层元素).on("绑定事件的方式", 需要绑定的jquery对象, 回调函数)
          */
-        $("#questionBody").on("click", $("input[name=xz]"), function ()
-        {
+        $("#questionBody").on("click", $("input[name=xz]"), function () {
             $("#qx").prop("checked", $("input[name=xz]").length==$("input[name=xz]:checked").length);
         })
 
-    })
+        // 为“批量导出”按钮绑定单击事件
+        $("#exportQuestionAllBtn").click(function (){
+            // 发送同步请求
+            window.location.href="question/exportAllQuestion.do";
+        })
+
+        // 为“批选择导出”按钮绑定单击事件
+        $("#exportQuestionCheckedBtn").click(function (){
+            // 找到复选框所有挑√的复选框的jquery对象
+            var $check = $("input[name=xz]:checked");
+            if ($check.length == 0){
+                layer.alert("请选择需要导出的试题", {icon:7})
+            } else {
+                var param = [];
+                for(var i = 0; i < $check.length; i++) {
+                    // 将勾选的出来的试题id以','分割放入数组中
+                    param.push($($check[i]).val());
+                }
+                // 发送同步请求
+                window.location.href="question/exportCheckedQuestion.do?id="+param;
+            }
+        })
+
+        // 给“导入”按钮添加单击事件
+        $("#importQuestionBtn").click(function (){
+            // 收集参数
+            var questionFileName = $("#questionFile").val();
+            var type = questionFileName.substr(questionFileName.lastIndexOf(".")+1).toLowerCase(); // xls,XLS,Xls...
+            if (type != "xls"){
+                layer.alert("请选择xls文件类型的文件", {icon:7});
+                return;
+            }
+
+            var questionFile = $("#questionFile")[0].files[0];
+            if (questionFile.size > (5*1024*1024)){
+                layer.alert("文件大小不能超过5MB", {icon:7});
+                return;
+            }
+
+            // FormData是ajax提供的接口，可以模拟键值对向后台提交参数
+            // ForData最大的优势是不仅可以提交文本数据，还可以提交二进制数据
+            var formData = new FormData();
+            formData.append("questionFile", questionFile);
+            // 发送请求
+            $.ajax({
+                url:"question/importQuestion.do",
+                data:formData,
+                type:"post",
+                dataType:"json",
+                processData: false, // processData处理数据
+                contentType: false, // contentType发送数据的格式
+                success:function (data){
+                    if (data.code == "1"){
+                        layer.alert(data.message, {icon:6});
+                        // 关闭模态窗口
+                        $("#importQuestionModal").modal("hide");
+                        refresh(1, $("#questionPage").bs_pagination('getOption', 'rowsPerPage'));
+                    } else {
+                        layer.alert(data.message, {icon:5});
+                    }
+                }
+            })
+        })
+
+    });
 
 
     // 定义一个函数，发送请求不同页码对应的数据
@@ -230,8 +280,7 @@
         }, "json")
     }
 
-    function deleteById(questionId)
-    {
+    function deleteById(questionId) {
         if (confirm("您确定删除吗？")) {
             $.ajax({
                 url: "question/deleteById.do",
@@ -254,9 +303,7 @@
         }
     }
 
-    function updateById(questionId)
-    {
-
+    function updateById(questionId) {
         $.ajax({
             url : "question/getById.do",
             data : {
@@ -264,8 +311,7 @@
             },
             type : "get",
             dataType : "json",
-            success : function (data)
-            {
+            success : function (data) {
                 // 把查询出的数据存储到将要更新的域中
                 $("#update_questionId").val(data.questionId);
                 $("#update_title").val(data.title);
@@ -316,6 +362,12 @@
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-primary" id="addBt"><span class="glyphicon glyphicon-plus"></span> 创建</button>
             </div>
+        </div>
+
+        <div class="btn-group" style="position: relative; top: 18%;">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importQuestionModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
+            <button id="exportQuestionAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（批量导出）</button>
+            <button id="exportQuestionCheckedBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（选择导出）</button>
         </div>
 
         <div style="position: relative;top: 10px;">
@@ -484,6 +536,42 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary" id="updateBt">修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 导入试题的模态窗口 -->
+<div class="modal fade" id="importQuestionModal" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 85%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">导入试题</h4>
+            </div>
+            <div class="modal-body" style="height: 350px;">
+                <div style="position: relative;top: 20px; left: 50px;">
+                    请选择要上传的文件：<small style="color: gray;">[仅支持.xls]</small>
+                </div>
+                <div style="position: relative;top: 40px; left: 50px;">
+                    <input type="file" id="questionFile">
+                </div>
+                <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;" >
+                    <h3>重要提示</h3>
+                    <ul>
+                        <li>操作仅针对Excel，仅支持后缀名为XLS的文件。</li>
+                        <li>给定文件的第一行将视为字段名。</li>
+                        <li>请确认您的文件大小不超过5MB。</li>
+                        <li>默认情况下，字符编码是UTF-8 (统一码)，请确保您导入的文件使用的是正确的字符编码方式。</li>
+                        <li>建议您在导入真实数据之前用测试文件测试文件导入功能。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="importQuestionBtn" type="button" class="btn btn-primary">导入</button>
             </div>
         </div>
     </div>

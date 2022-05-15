@@ -28,16 +28,14 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/user")
-public class UserController
-{
+public class UserController {
     @Autowired
     private UserService userService;
 
     // 修改用户信息
     @ResponseBody
     @RequestMapping(value = "/set.do")
-    public void set(User user)
-    {
+    public void set(User user) {
         boolean flag = userService.set(user);
         return;
     }
@@ -45,8 +43,7 @@ public class UserController
     // 根据id值查找用户
     @ResponseBody
     @RequestMapping(value = "/getById.do")
-    public User getById(Integer user_id)
-    {
+    public User getById(Integer user_id) {
         User user = userService.getById(user_id);
         return user;
     }
@@ -54,8 +51,7 @@ public class UserController
     // 新增用户
     @ResponseBody
     @RequestMapping(value = "/save.do")
-    public void save(User user)
-    {
+    public void save(User user) {
         boolean flag = userService.save(user);
         return;
     }
@@ -63,8 +59,7 @@ public class UserController
     // 删除多个用户
     @ResponseBody
     @RequestMapping(value = "/delete.do")
-    public void deleteById(String ids)
-    {
+    public void deleteById(String ids) {
         // 将字符串以','分割保存到数组中
         String[] d = ids.split(",");
         userService.delete(d);
@@ -74,8 +69,7 @@ public class UserController
     // 删除单个用户
     @ResponseBody
     @RequestMapping(value = "/deleteById.do")
-    public void deleteById(Integer user_id)
-    {
+    public void deleteById(Integer user_id) {
         boolean flag = userService.deleteById(user_id);
         return;
     }
@@ -83,8 +77,7 @@ public class UserController
     // 根据条件查找用户
     @ResponseBody
     @RequestMapping(value = "/find.do")
-    public PageInfo<User> find(Integer page, Integer pageSize, User user)
-    {
+    public PageInfo<User> find(Integer page, Integer pageSize, User user) {
         PageHelper.startPage(page, pageSize);
         List<User> userList = userService.find(user);
         PageInfo<User> pageInfo = new PageInfo<>(userList);
@@ -93,8 +86,7 @@ public class UserController
 
     // 获取所有用户信息
     @RequestMapping(value = "/getAll.do")
-    public String getAll(HttpServletRequest request)
-    {
+    public String getAll(HttpServletRequest request) {
         List<User> userList = userService.getAll();
         request.setAttribute("userList", userList);
         return "users";
@@ -102,16 +94,13 @@ public class UserController
 
     // 登录验证
     @RequestMapping(value = "/login.do")
-    public String login(HttpSession session, Model model, User u)
-    {
+    public String login(HttpSession session, Model model, User u) {
         User user = userService.login(u);
-        if(user != null)
-        {
+        if(user != null) {
             session.setAttribute("user", user);
             return "main";
         }
-        else
-        {
+        else {
             model.addAttribute("errmsg", "用户名或密码错误");
             return "login";
         }
@@ -120,16 +109,13 @@ public class UserController
 
     // 用户注册
     @RequestMapping(value = "/register.do")
-    public String register(HttpServletRequest request, Model model, String myname, String mypwd)
-    {
+    public String register(HttpServletRequest request, Model model, String myname, String mypwd) {
         boolean flag = userService.register(myname, mypwd);
-        if(flag)
-        {
+        if(flag) {
             model.addAttribute("is", "注册成功");
         }
-        else
-        {
-            model.addAttribute("is", "注册失败");
+        else {
+            model.addAttribute("is", "注册失败,用户名已存在");
         }
         return "register";
     }
@@ -236,7 +222,7 @@ public class UserController
 
     @RequestMapping("/importUser.do")
     @ResponseBody
-    public Object importActivity(MultipartFile userFile){
+    public Object importUser(MultipartFile userFile){
         ReturnObject returnObject = new ReturnObject();
 
         try {

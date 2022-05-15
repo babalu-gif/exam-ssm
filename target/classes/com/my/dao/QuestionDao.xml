@@ -75,4 +75,27 @@
         </where>
         order by questionId asc
     </select>
+
+    <select id="findAllQuestions" resultType="com.my.entity.Question">
+        select <include refid="Base_Column_List"/>
+        from t_question
+    </select>
+
+    <select id="findQuestionsByIds" resultType="com.my.entity.Question">
+        select <include refid="Base_Column_List"/>
+        from t_question
+        where questionId in
+        <foreach collection="array" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        order by questionId asc
+    </select>
+
+    <insert id="saveQuestions" parameterType="com.my.entity.Question">
+        insert into t_question(title, optionA, optionB, optionC, optionD, answer)
+        values
+        <foreach collection="list" item="question" separator=",">
+            (#{question.title},#{question.optionA},#{question.optionB},#{question.optionC},#{question.optionD},#{question.answer})
+        </foreach>
+    </insert>
 </mapper>

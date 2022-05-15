@@ -1,7 +1,6 @@
 package com.my.entity;
 
-public class Question
-{
+public class Question {
     private Integer questionId;
     private String title;
     private String optionA;

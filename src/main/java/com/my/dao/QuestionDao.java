@@ -4,8 +4,7 @@ import com.my.entity.Question;
 
 import java.util.List;
 
-public interface QuestionDao
-{
+public interface QuestionDao {
     List<Question> find(Question question);
 
     int save(Question question);
@@ -17,4 +16,10 @@ public interface QuestionDao
     int update(Question question);
 
     Integer delete(String[] ids);
+
+    List<Question> findAllQuestions();
+
+    List<Question> findQuestionsByIds(String[] ids);
+
+    int saveQuestions(List<Question> questionList);
 }

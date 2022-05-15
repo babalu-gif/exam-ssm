@@ -5,8 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface UserDao
-{
+public interface UserDao {
     User login(User user);
 
     int register(@Param("myname") String myname, @Param("mypwd") String mypwd);
@@ -14,6 +13,8 @@ public interface UserDao
     List<User> getAll();
 
     List<User> find(User user);
+
+    User findUserByName(String name);
 
     int deleteById(Integer user_id);
 

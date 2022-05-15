@@ -9,14 +9,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ExamServiceImpl implements ExamService
-{
+public class ExamServiceImpl implements ExamService {
     @Autowired
     private ExamDao questionDao;
 
     @Override
-    public List<Question> getRand()
-    {
+    public List<Question> getRand() {
         List<Question> questionList = questionDao.getRand();
         return questionList;
     }

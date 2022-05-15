@@ -1,7 +1,6 @@
 package com.my.entity;
 
-public class User
-{
+public class User {
     private Integer user_id;
     private String user_Name;
     private String user_Password;
