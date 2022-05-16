@@ -15,12 +15,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean set(User user) {
-        boolean flag = true;
+        User u = userDao.findUserByName(user.getUser_Name());
+        if (u != null){
+           return false;
+        }
        int count = userDao.set(user);
         if(count != 1) {
-            flag = false;
+            return false;
         }
-        return flag;
+        return true;
     }
 
     @Override
@@ -31,12 +34,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean save(User user) {
-        boolean flag = true;
+        User u = userDao.findUserByName(user.getUser_Name());
+        if (u != null){
+            return false;
+        }
+        // 如果没有选择头像，则使用默认的头像
+        if ("未选择文件...".equals(user.getAvatar())){
+            user.setAvatar("logo.jpg");
+        }
         int count = userDao.save(user);
         if(count != 1) {
-            flag = false;
+            return false;
         }
-        return flag;
+        return true;
     }
 
     @Override
@@ -67,23 +77,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(User u) {
-        User user = userDao.login(u);
+    public User login(String myname, String mypwd) {
+        User user = userDao.login(myname, mypwd);
         return user;
     }
 
     @Override
     public boolean register(String myname, String mypwd) {
-        boolean flag = true;
         User user  = userDao.findUserByName(myname);
         if (user != null){
-            flag = false;
+            return false;
         }
         int count = userDao.register(myname, mypwd);
         if(count != 1) {
-            flag = false;
+            return false;
         }
-        return flag;
+        return true;
     }
 
     @Override

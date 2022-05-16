@@ -5,21 +5,26 @@ import com.github.pagehelper.PageInfo;
 import com.my.entity.ReturnObject;
 import com.my.entity.User;
 import com.my.service.UserService;
+import com.my.utils.FileNameUtil;
 import com.my.utils.HSSFUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,12 +37,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private String saveFileName = "";
+
     // 修改用户信息
     @ResponseBody
     @RequestMapping(value = "/set.do")
-    public void set(User user) {
+    public Object set(User user) {
+        ReturnObject returnObject = new ReturnObject();
         boolean flag = userService.set(user);
-        return;
+        if (flag == true){
+            returnObject.setCode("200");
+        } else {
+            returnObject.setMessage("用户修改失败，用户名已存在!");
+            returnObject.setCode("301");
+        }
+        return returnObject;
     }
 
     // 根据id值查找用户
@@ -51,9 +65,16 @@ public class UserController {
     // 新增用户
     @ResponseBody
     @RequestMapping(value = "/save.do")
-    public void save(User user) {
+    public Object save(User user) {
+        ReturnObject returnObject = new ReturnObject();
         boolean flag = userService.save(user);
-        return;
+        if (flag == true){
+            returnObject.setCode("200");
+        } else {
+            returnObject.setMessage("用户添加失败，用户名已存在!");
+            returnObject.setCode("301");
+        }
+        return returnObject;
     }
 
     // 删除多个用户
@@ -93,18 +114,44 @@ public class UserController {
     }
 
     // 登录验证
+    @ResponseBody
     @RequestMapping(value = "/login.do")
-    public String login(HttpSession session, Model model, User u) {
-        User user = userService.login(u);
+    public Object login(HttpServletResponse response, HttpSession session,
+                        String userName, String password, String isRemPwd) {
+        User user = userService.login(userName, password);
+        ReturnObject returnObject = new ReturnObject();
         if(user != null) {
             session.setAttribute("user", user);
-            return "main";
+            returnObject.setCode("200");
         }
         else {
-            model.addAttribute("errmsg", "用户名或密码错误");
-            return "login";
+            returnObject.setCode("302");
+            returnObject.setMessage("用户名或密码错误");
         }
 
+        // 判断是否需要自动登录
+        if ("true".equals(isRemPwd)){
+            Cookie cookie = new Cookie("userName", userName);
+            cookie.setMaxAge(10*24*60*60);
+            response.addCookie(cookie);
+            Cookie cookie1 = new Cookie("password", password);
+            cookie1.setMaxAge(10*24*60*60);
+            response.addCookie(cookie1);
+        } else {
+            // 把没有过期的cookie删除
+            Cookie cookie = new Cookie("userName", "0");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+            Cookie cookie1 = new Cookie("password", "0");
+            cookie1.setMaxAge(0);
+            response.addCookie(cookie1);
+        }
+        return returnObject;
+    }
+
+    @RequestMapping(value = "/toMain.do")
+    public String toMain(){
+        return "main";
     }
 
     // 用户注册
@@ -264,5 +311,28 @@ public class UserController {
             returnObject.setMessage("系统忙，请稍后重试...");
         }
         return returnObject;
+    }
+
+    // 异步ajax文件上传处理
+    @ResponseBody
+    @RequestMapping(value = "/ajaxImg.do")
+    public Object ajaxImg(HttpServletRequest request, MultipartFile userImage) {
+        saveFileName = FileNameUtil.getUUIDFileName()+FileNameUtil.getFileType(userImage.getOriginalFilename());
+        // 得到项目中图片存储的路径
+        String path = request.getServletContext().getRealPath("/image_user");
+        System.out.println("============");
+        System.out.println("path:"+path);
+        // 转存
+        try {
+            userImage.transferTo(new File(path + File.separator + saveFileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 返回给客户端JSON对象，封装图片的路径，为了在页面实现立即回显
+        JSONObject object = new JSONObject();
+        object.put("imgurl", saveFileName);
+
+        return object.toString();
     }
 }

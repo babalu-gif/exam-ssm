@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.my.dao.UserDao">
     <sql id="Base_Column_List">
-        user_id, user_Name, user_Password, user_Sex, user_Email
+        user_id, user_Name, user_Password, avatar, user_Sex, user_Email
     </sql>
 
     <delete id="delete">
@@ -40,14 +40,16 @@
            user_Name,
            user_Password,
            user_Sex,
-           user_Email
+           user_Email,
+           avatar
        )
         values
        (
            #{user_Name},
            #{user_Password},
            #{user_Sex},
-           #{user_Email}
+           #{user_Email},
+           #{avatar}
        )
     </insert>
 
@@ -88,11 +90,11 @@
         from
              t_user
         where
-              user_Name=#{user_Name} and user_Password=#{user_Password}
+              user_Name=#{myname} and user_Password=#{mypwd}
     </select>
 
     <insert id="register">
-        insert into t_user(user_Name, user_Password, user_Sex, user_Email) values(#{myname}, #{mypwd}, '', '')
+        insert into t_user(user_Name, user_Password, avatar, user_Sex, user_Email) values(#{myname}, #{mypwd}, 'logo.jpg', '', '')
     </insert>
 
     <select id="findUserByName" resultType="com.my.entity.User">
@@ -117,10 +119,10 @@
     </select>
 
     <insert id="saveUsers" parameterType="com.my.entity.User">
-        insert into t_user(user_Name, user_Password, user_Sex, user_Email)
+        insert into t_user(user_Name, user_Password, avatar, user_Sex, user_Email)
         values
         <foreach collection="list" item="user" separator=",">
-            (#{user.user_Name}, #{user.user_Password}, #{user.user_Sex}, #{user.user_Email})
+            (#{user.user_Name}, #{user.user_Password}, 'logo.jpg', #{user.user_Sex}, #{user.user_Email})
         </foreach>
     </insert>
 </mapper>

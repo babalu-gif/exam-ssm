@@ -27,3 +27,7 @@ Github地址：(https://github.com/babalu-gif/exam-ssm.git/
     没有对成绩做记录
     功能简单，只有最基础的增删改查
     
+新增功能：
+    自动登录
+    头像修改
+    导入导出

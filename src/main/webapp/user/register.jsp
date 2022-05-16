@@ -16,8 +16,7 @@
 </head>
 
 <script>
-    function back()
-    {
+    function back() {
         document.location.href = "user/login.jsp";
     }
 </script>

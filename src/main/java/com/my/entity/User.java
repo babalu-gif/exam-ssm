@@ -6,6 +6,7 @@ public class User {
     private String user_Password;
     private String user_Sex;
     private String user_Email;
+    private String avatar;
 
     public User() {
     }
@@ -48,5 +49,13 @@ public class User {
 
     public void setUser_Email(String user_Email) {
         this.user_Email = user_Email;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

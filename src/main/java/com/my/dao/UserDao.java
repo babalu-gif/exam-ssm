@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface UserDao {
-    User login(User user);
+    User login(@Param("myname") String myname, @Param("mypwd") String mypwd);
 
     int register(@Param("myname") String myname, @Param("mypwd") String mypwd);
 

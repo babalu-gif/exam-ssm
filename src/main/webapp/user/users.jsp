@@ -17,8 +17,17 @@
     <script src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
     <%--layer插件--%>
     <script type="text/javascript" src="jquery/layer-3.5.1/layer.js"></script>
+    <%--文件上传--%>
+    <script type="text/javascript" src="js/ajaxfileupload.js"></script>
     <title>Title</title>
 </head>
+
+<style>
+    input[type="file"] {
+        color: transparent;
+    }
+</style>
+
 <script type="text/javascript">
     $(function (){
 
@@ -32,25 +41,41 @@
 
         // 为保存按钮绑定事件，执行添加操作
         $("#saveBt").click(function (){
+            alert(document.getElementById("imgName").innerHTML)
             $.ajax({
                 url : "user/save.do",
                 data : {
                     "user_Name" : $("#create_username").val().trim(),
                     "user_Password" : $("#create_password").val().trim(),
                     "user_Sex" : $("#create_sex").val().trim(),
-                    "user_Email" : $("#create_email").val().trim()
+                    "user_Email" : $("#create_email").val().trim(),
+                    "avatar" : document.getElementById("imgName").innerHTML
                 },
                 type : "post",
-                success : function () {
-                    layer.alert("添加用户成功！", {icon:6});
-                    // 清空添加模态窗口的数据
-                    $("#userAddForm")[0].reset();
-                    // 关闭模态窗口
-                    $("#createUserModal").modal("hide");
-                    /*
-                        添加成功后，回到第一页，维持每页展示对的记录数
-                    */
-                    refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
+                dataType:"json",
+                success : function (data) {
+                    if (data.code == "200"){
+                        layer.alert("添加用户成功！", {icon:6});
+                        // 清空添加模态窗口的数据
+                        $("#userAddForm")[0].reset();
+                        // 关闭模态窗口
+                        $("#createUserModal").modal("hide");
+                        /*
+                            添加成功后，回到第一页，维持每页展示对的记录数
+                        */
+                        refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
+                        // 清空添加模态窗口的数据
+                        $("#userAddForm")[0].reset();
+                        // 关闭模态窗口
+                        $("#createUserModal").modal("hide");
+                        /*
+                            添加成功后，回到第一页，维持每页展示对的记录数
+                        */
+                        refresh(1, $("#userPage").bs_pagination('getOption', 'rowsPerPage'));
+                    } else {
+                        layer.alert(data.message, {icon:5});
+                    }
+
                 },
                 error : function () {
                     layer.alert("添加用户失败！", {icon:2});
@@ -70,21 +95,26 @@
                     "user_Email" : $("#update_email").val().trim()
                 },
                 type : "post",
-                dataType : "text",
-                success : function () {
-                    layer.alert("修改用户成功！", {icon:6});
-                    // 清空添加模态窗口的数据
-                    $("#userUpdateForm")[0].reset();
-                    // 关闭模态窗口
-                    $("#updateUserModal").modal("hide");
-                    /*
-						修改操作后，应该维持在当前页，维持每页展示的记录数
-					*/
-                    refresh($("#userPage").bs_pagination('getOption', 'currentPage')
-                        ,$("#userPage").bs_pagination('getOption', 'rowsPerPage'));
+                dataType : "json",
+                success : function (data) {
+                    if (data.code == "200"){
+                        layer.alert("修改用户成功！", {icon:6});
+                        // 清空添加模态窗口的数据
+                        $("#userUpdateForm")[0].reset();
+                        // 关闭模态窗口
+                        $("#updateUserModal").modal("hide");
+                        /*
+                            修改操作后，应该维持在当前页，维持每页展示的记录数
+                        */
+                        refresh($("#userPage").bs_pagination('getOption', 'currentPage')
+                            ,$("#userPage").bs_pagination('getOption', 'rowsPerPage'));
+                    } else {
+                        layer.alert("修改用户失败，用户名已存在！", {icon:5});
+                    }
+
                 },
                 error : function () {
-                    layer.alert("修改用户失败！", {icon:2});
+                    layer.alert("修改用户失败！", {icon:5});
                 }
             })
         })
@@ -102,8 +132,7 @@
         $("#deleteBt").click(function (){
             // 找到复选框所有挑√的复选框的jquery对象
             var $xz = $("input[name=xz]:checked");
-            if($xz.length == 0)
-            {
+            if($xz.length == 0) {
                 layer.alert("请选择需要删除的记录", {icon:0});
             }
             else {
@@ -315,6 +344,31 @@
             })
         }
     }
+
+    function fileChange(){//注意：此处不能使用jQuery中的change事件，因此仅触发一次，因此使用标签的：onchange属性
+        $.ajaxFileUpload({
+            url: "user/ajaxImg.do", //用于文件上传的服务器端请求地址
+            secureuri: false, //安全协议，一般设置为false
+            fileElementId: "addAvatar",//文件上传控件的id属性  <input type="file" id="addAvatar" name="userImage" />
+            dataType: "json",
+            success: function(obj) {
+                $("#imgDiv").empty();  //清空原有数据
+                //创建一个图片的标签
+                var imgObj = $("<img>");
+                //给img标签对象追加属性
+                imgObj.attr("src", "image_user/"+obj.imgurl);
+                imgObj.attr("width", "100px");
+                imgObj.attr("height", "100px");
+                //将图片img标签追加到imgDiv末尾
+                $("#imgDiv").append(imgObj);
+                // 将图片的名称赋值给文本框
+                $("#imgName").html(obj.imgurl);
+            },
+            error: function (e) {
+                alert(e.message);
+            }
+        });
+    }
 </script>
 
 <body>
@@ -431,6 +485,13 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create_username">
                         </div>
+                        <%--<label for="create_password" class="col-sm-2 control-label">密码<span style="font-size: 15px; color: red;">*</span></label>
+                        <div class="col-sm-10" style="width: 300px;">
+                            <input type="password" class="form-control" id="create_password">
+                        </div>--%>
+                    </div>
+
+                    <div class="form-group">
                         <label for="create_password" class="col-sm-2 control-label">密码<span style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="password" class="form-control" id="create_password">
@@ -452,6 +513,22 @@
                         <div class="col-sm-10" style="width: 81%;">
                             <textarea class="form-control" rows="1" id="create_email"></textarea>
                         </div>
+                    </div>
+
+                    <%--<div class="form-group">
+                        <label for="create_email" class="col-sm-2 control-label">邮箱</label>
+                        <div class="col-sm-10" style="width: 81%;">
+                            <textarea class="form-control" rows="1" id="create_email"></textarea>
+                        </div>
+                    </div>--%>
+
+                    <div class="form-group">
+                        <label for="create_username" class="col-sm-2 control-label">图片介绍<span style="font-size: 15px; color: red;"></span></label>
+                       <%-- <td class="three">图片介绍</td>--%>
+                        <td> <br><div id="imgDiv" style="display:block; width: 40px; height: 50px;"></div><br><br><br><br>
+                            <input type="file" id="addAvatar" name="userImage" accept="image/jpg,image/png,image/jpeg,image/bmp" onchange="fileChange()">
+                            <span id="imgName" >未选择文件...</span><br>
+                        </td>
                     </div>
 
                 </form>

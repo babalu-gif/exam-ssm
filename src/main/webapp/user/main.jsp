@@ -15,6 +15,35 @@
     <style type="text/css">
 
     </style>
+
+    <script type="text/javascript">
+        function fileChange(){//注意：此处不能使用jQuery中的change事件，因此仅触发一次，因此使用标签的：onchange属性
+
+
+        }
+
+
+        /*$(function (){
+            //使用bind方法绑定click事件
+            $("#avatar").bind("click",function(){
+                alert('你点击了图片');
+                // document.getElementById("avatar").src = "images/xiugai.png";
+
+                $.ajaxFileUpload({
+                    url: "user/updateAvatar.do", //用于文件上传的服务器端请求地址
+                    secureuri: false, //安全协议，一般设置为false
+                    fileElementId: "avatar",//文件上传控件的id属性  <input type="file" id="pimage" name="pimage" />
+                    dataType: "json",
+                    success: function(obj) {
+                        document.getElementById("avatar").src = "image_user/"+obj.imgurl;
+                    },
+                    error: function (e) {
+                        alert(e.message);
+                    }
+                });
+            })
+        });*/
+    </script>
 </head>
 <body>
     <!--整体部分-->
@@ -35,8 +64,10 @@
             <div id="bleft">
                 <div id="ltop">
                     <div id="lts">
-                        <img src="images/logo.jpg" /><br/><br/>
+                        <img id="avatar" name="image" src="image_user/${sessionScope.user.avatar}" /><br/><br/>
                         <%--<p style="text-align: center;">${user.user_Name}</p>--%>
+
+<%--                                <input type="file" id="avatar" name="pimage" onchange="fileChange()" src="image_user/${sessionScope.user.avatar}">--%>
                     </div>
                 </div>
                 <div id="lbottom">
