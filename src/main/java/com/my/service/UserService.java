@@ -28,4 +28,8 @@ public interface UserService {
     List<User> findUsersByIds(String[] ids);
 
     int saveUsers(List<User> userList);
+
+    boolean setPwd(User user);
+
+    boolean setAvatar(User user);
 }

@@ -126,4 +126,16 @@
             (#{user.user_Name}, #{user.user_Password}, 'logo.jpg', #{user.user_Sex}, #{user.user_Email})
         </foreach>
     </insert>
+
+    <update id="setPwd">
+        update t_user
+        set user_Password = #{user_Password}
+        where user_id = #{user_id}
+    </update>
+
+    <update id="setAvatar">
+        update t_user
+        set avatar = #{avatar}
+        where user_id = #{user_id}
+    </update>
 </mapper>

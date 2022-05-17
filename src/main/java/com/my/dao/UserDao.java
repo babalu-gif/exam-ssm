@@ -31,4 +31,8 @@ public interface UserDao {
     List<User> findUsersByIds(String[] ids);
 
     int saveUsers(List<User> userList);
+
+    int setPwd(User user);
+
+    int setAvatar(User user);
 }

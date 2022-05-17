@@ -79,6 +79,13 @@
 		margin: 0px auto;
 	}
 
+	#all #bottom #bleft #ltop #lts2 {
+		width: 150px;
+		height: 150px;
+		border-bottom: 1px solid lightgray;
+		margin: 0px auto;
+	}
+
 	#all #bottom #bleft #ltop img {
 		width: 90px;
 		height: 90px;

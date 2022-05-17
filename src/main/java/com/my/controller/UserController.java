@@ -149,12 +149,10 @@ public class UserController {
         // 判断是否需要自动登录
         if ("true".equals(isRemPwd)){
             Cookie cookie = new Cookie("userName", userName);
-//            cookie.setMaxAge(10*24*60*60);
-            cookie.setPath("/");
+            cookie.setMaxAge(10*24*60*60);
             response.addCookie(cookie);
             Cookie cookie1 = new Cookie("password", password);
-//            cookie1.setMaxAge(10*24*60*60);
-            cookie1.setMaxAge(10*60);
+            cookie1.setMaxAge(10*24*60*60);
             response.addCookie(cookie1);
         } else {
             // 把没有过期的cookie删除
@@ -175,7 +173,6 @@ public class UserController {
 
     @RequestMapping(value = "/logout.do")
     public String logout(HttpServletResponse response, HttpSession session){
-        User user = (User) session.getAttribute("user");
         // 清除cookie
         Cookie cookie = new Cookie("userName", "0");
         cookie.setMaxAge(0);
@@ -186,6 +183,12 @@ public class UserController {
 
         // 销毁session,释放内存
         session.invalidate();
+        // 重定向到首页，不把数据传过去
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/toLogin.do")
+    public String toLogin(){
         // 重定向到首页，不把数据传过去
         return "redirect:/";
     }
@@ -377,5 +380,49 @@ public class UserController {
         object.put("code", "200");
 
         return object.toString();
+    }
+
+    // 修改用户密码
+    @ResponseBody
+    @RequestMapping(value = "/updatePwd.do")
+    public Object updatePwd(User user, HttpSession session, HttpServletResponse response){
+        boolean flag = userService.setPwd(user);
+        ReturnObject returnObject = new ReturnObject();
+        if (flag == true){
+            Cookie cookie = new Cookie("password", "0");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+
+            // 销毁session,释放内存
+            session.invalidate();
+
+            returnObject.setCode("200");
+        } else {
+            returnObject.setCode("304");
+            returnObject.setMessage("系统忙，请稍后重试...");
+        }
+        return returnObject;
+    }
+
+    // 修改用户头像
+    @ResponseBody
+    @RequestMapping(value = "/setAvatar.do")
+    public Object setAvatar(User user, HttpSession session) {
+        ReturnObject returnObject = new ReturnObject();
+        boolean flag = userService.setAvatar(user);
+        if (flag == true){
+            User u = (User) session.getAttribute("user");
+            u.setAvatar(user.getAvatar());
+            System.out.println("=========");
+            System.out.println("=========");
+            System.out.println(user.getAvatar());
+            session.setAttribute("user", u);
+            returnObject.setCode("200");
+            returnObject.setMessage("头像修改成功");
+        } else {
+            returnObject.setCode("305");
+            returnObject.setMessage("系统忙，请稍后再试...");
+        }
+        return returnObject;
     }
 }

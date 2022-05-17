@@ -114,4 +114,24 @@ public class UserServiceImpl implements UserService {
     public int saveUsers(List<User> userList) {
         return userDao.saveUsers(userList);
     }
+
+    @Override
+    public boolean setPwd(User user) {
+        boolean flag = false;
+        int count = userDao.setPwd(user);
+        if (count > 0){
+            flag = true;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean setAvatar(User user) {
+        boolean flag = false;
+        int count = userDao.setAvatar(user);
+        if (count > 0){
+            flag = true;
+        }
+        return flag;
+    }
 }
