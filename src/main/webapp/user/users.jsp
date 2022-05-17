@@ -41,7 +41,6 @@
 
         // 为保存按钮绑定事件，执行添加操作
         $("#saveBt").click(function (){
-            alert(document.getElementById("imgName").innerHTML)
             $.ajax({
                 url : "user/save.do",
                 data : {
@@ -49,7 +48,7 @@
                     "user_Password" : $("#create_password").val().trim(),
                     "user_Sex" : $("#create_sex").val().trim(),
                     "user_Email" : $("#create_email").val().trim(),
-                    "avatar" : document.getElementById("imgName").innerHTML
+                    "avatar" : $("#imgName").html()
                 },
                 type : "post",
                 dataType:"json",
@@ -92,7 +91,8 @@
                     "user_Name" : $("#update_username").val().trim(),
                     "user_Password" : $("#update_password").val().trim(),
                     "user_Sex" : $("#update_sex").val().trim(),
-                    "user_Email" : $("#update_email").val().trim()
+                    "user_Email" : $("#update_email").val().trim(),
+                    "avatar":$("#updateImgName").html()
                 },
                 type : "post",
                 dataType : "json",
@@ -265,8 +265,7 @@
             // 清空userBody的数据
             $("#userBody").html("");
             var html = "";
-            $.each(data.list, function(index, u)
-            {
+            $.each(data.list, function(index, u) {
                 html += '<tr>';
                 html += '<td><input name="xz" type="checkbox" value="'+u.user_id+'"/></td>';
                 html += '<td>'+u.user_Name+'</td>';
@@ -315,6 +314,16 @@
                 $("#update_password").val(data.user_Password);
                 $("#update_sex").val(data.user_Sex);
                 $("#update_email").val(data.user_Email);
+                $("#updateImgName").html(data.avatar);
+                $("#updateImgDiv").empty();  //清空原有数据
+                //创建一个图片的标签
+                var imgObj = $("<img>");
+                //给img标签对象追加属性
+                imgObj.attr("src", "image_user/" + data.avatar);
+                imgObj.attr("width", "100px");
+                imgObj.attr("height", "100px");
+                //将图片img标签追加到imgDiv末尾
+                $("#updateImgDiv").append(imgObj);
             }
         })
 
@@ -345,24 +354,57 @@
         }
     }
 
-    function fileChange(){//注意：此处不能使用jQuery中的change事件，因此仅触发一次，因此使用标签的：onchange属性
+    function fileChange() {//注意：此处不能使用jQuery中的change事件，因此仅触发一次，因此使用标签的：onchange属性
         $.ajaxFileUpload({
             url: "user/ajaxImg.do", //用于文件上传的服务器端请求地址
             secureuri: false, //安全协议，一般设置为false
             fileElementId: "addAvatar",//文件上传控件的id属性  <input type="file" id="addAvatar" name="userImage" />
             dataType: "json",
-            success: function(obj) {
-                $("#imgDiv").empty();  //清空原有数据
-                //创建一个图片的标签
-                var imgObj = $("<img>");
-                //给img标签对象追加属性
-                imgObj.attr("src", "image_user/"+obj.imgurl);
-                imgObj.attr("width", "100px");
-                imgObj.attr("height", "100px");
-                //将图片img标签追加到imgDiv末尾
-                $("#imgDiv").append(imgObj);
-                // 将图片的名称赋值给文本框
-                $("#imgName").html(obj.imgurl);
+            success: function (data) {
+                if (data.code == "200") {
+                    $("#imgDiv").empty();  //清空原有数据
+                    //创建一个图片的标签
+                    var imgObj = $("<img>");
+                    //给img标签对象追加属性
+                    imgObj.attr("src", "image_user/" + data.retData);
+                    imgObj.attr("width", "100px");
+                    imgObj.attr("height", "100px");
+                    //将图片img标签追加到imgDiv末尾
+                    $("#imgDiv").append(imgObj);
+                    // 将图片的名称赋值给文本框
+                    $("#imgName").html(data.retData);
+                } else {
+                    layer.alert(data.message, {icon: 7});
+                }
+            },
+            error: function (e) {
+                alert(e.message);
+            }
+        });
+    }
+
+    function fileChange2() {//注意：此处不能使用jQuery中的change事件，因此仅触发一次，因此使用标签的：onchange属性
+        $.ajaxFileUpload({
+            url: "user/ajaxImg.do", //用于文件上传的服务器端请求地址
+            secureuri: false, //安全协议，一般设置为false
+            fileElementId: "updateAvatar",//文件上传控件的id属性  <input type="file" id="updateAvatar" name="userImage" />
+            dataType: "json",
+            success: function (data) {
+                if (data.code == "200") {
+                    $("#updateImgDiv").empty();  //清空原有数据
+                    //创建一个图片的标签
+                    var imgObj = $("<img>");
+                    //给img标签对象追加属性
+                    imgObj.attr("src", "image_user/" + data.retData);
+                    imgObj.attr("width", "100px");
+                    imgObj.attr("height", "100px");
+                    //将图片img标签追加到imgDiv末尾
+                    $("#updateImgDiv").append(imgObj);
+                    // 将图片的名称赋值给文本框
+                    $("#updateImgName").html(data.retData);
+                } else {
+                    layer.alert(data.message, {icon: 7});
+                }
             },
             error: function (e) {
                 alert(e.message);
@@ -515,13 +557,6 @@
                         </div>
                     </div>
 
-                    <%--<div class="form-group">
-                        <label for="create_email" class="col-sm-2 control-label">邮箱</label>
-                        <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="1" id="create_email"></textarea>
-                        </div>
-                    </div>--%>
-
                     <div class="form-group">
                         <label for="create_username" class="col-sm-2 control-label">图片介绍<span style="font-size: 15px; color: red;"></span></label>
                        <%-- <td class="three">图片介绍</td>--%>
@@ -561,6 +596,9 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="update_username">
                         </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="update_password" class="col-sm-2 control-label">密码<span style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="password" class="form-control" id="update_password">
@@ -582,6 +620,15 @@
                         <div class="col-sm-10" style="width: 81%;">
                             <textarea class="form-control" rows="1" id="update_email"></textarea>
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="create_username" class="col-sm-2 control-label">图片介绍<span style="font-size: 15px; color: red;"></span></label>
+                        <%-- <td class="three">图片介绍</td>--%>
+                        <td> <br><div id="updateImgDiv" style="display:block; width: 40px; height: 50px;"></div><br><br><br><br>
+                            <input type="file" id="updateAvatar" name="userImage" accept="image/jpg,image/png,image/jpeg,image/bmp" onchange="fileChange2()">
+                            <span id="updateImgName" >未选择文件...</span><br>
+                        </td>
                     </div>
 
                 </form>

@@ -30,9 +30,9 @@
     </filter-mapping>
 
     <!--设置session存活时间（到时间需要用户重新登录）-->
-    <session-config>
+    <!--<session-config>
         <session-timeout>10</session-timeout>
-    </session-config>
+    </session-config>-->
 
     <!--注册springmvc框架-->
     <servlet>

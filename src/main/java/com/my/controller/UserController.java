@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +37,17 @@ public class UserController {
     private UserService userService;
 
     private String saveFileName = "";
+
+    /**
+     * 文件上传的类型
+     */
+    public static final List<String> AVATAR_TYPES = new ArrayList<>();
+    static {
+        AVATAR_TYPES.add("image/png");
+        AVATAR_TYPES.add("image/jpg");
+        AVATAR_TYPES.add("image/bmp");
+        AVATAR_TYPES.add("image/jpeg");
+    }
 
     // 修改用户信息
     @ResponseBody
@@ -119,6 +129,13 @@ public class UserController {
     public Object login(HttpServletResponse response, HttpSession session,
                         String userName, String password, String isRemPwd) {
         User user = userService.login(userName, password);
+        // 添加线程休眠，根据客户需求可以优化
+        /*try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
         ReturnObject returnObject = new ReturnObject();
         if(user != null) {
             session.setAttribute("user", user);
@@ -132,10 +149,12 @@ public class UserController {
         // 判断是否需要自动登录
         if ("true".equals(isRemPwd)){
             Cookie cookie = new Cookie("userName", userName);
-            cookie.setMaxAge(10*24*60*60);
+//            cookie.setMaxAge(10*24*60*60);
+            cookie.setPath("/");
             response.addCookie(cookie);
             Cookie cookie1 = new Cookie("password", password);
-            cookie1.setMaxAge(10*24*60*60);
+//            cookie1.setMaxAge(10*24*60*60);
+            cookie1.setMaxAge(10*60);
             response.addCookie(cookie1);
         } else {
             // 把没有过期的cookie删除
@@ -152,6 +171,23 @@ public class UserController {
     @RequestMapping(value = "/toMain.do")
     public String toMain(){
         return "main";
+    }
+
+    @RequestMapping(value = "/logout.do")
+    public String logout(HttpServletResponse response, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        // 清除cookie
+        Cookie cookie = new Cookie("userName", "0");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        Cookie cookie1 = new Cookie("password", "0");
+        cookie1.setMaxAge(0);
+        response.addCookie(cookie1);
+
+        // 销毁session,释放内存
+        session.invalidate();
+        // 重定向到首页，不把数据传过去
+        return "redirect:/";
     }
 
     // 用户注册
@@ -318,10 +354,16 @@ public class UserController {
     @RequestMapping(value = "/ajaxImg.do")
     public Object ajaxImg(HttpServletRequest request, MultipartFile userImage) {
         saveFileName = FileNameUtil.getUUIDFileName()+FileNameUtil.getFileType(userImage.getOriginalFilename());
+
+        if (!AVATAR_TYPES.contains(userImage.getContentType())){
+            JSONObject object = new JSONObject();
+            object.put("code", "303");
+            object.put("message", "Allowed file types:" + AVATAR_TYPES);
+            return object.toString();
+        }
+
         // 得到项目中图片存储的路径
         String path = request.getServletContext().getRealPath("/image_user");
-        System.out.println("============");
-        System.out.println("path:"+path);
         // 转存
         try {
             userImage.transferTo(new File(path + File.separator + saveFileName));
@@ -331,7 +373,8 @@ public class UserController {
 
         // 返回给客户端JSON对象，封装图片的路径，为了在页面实现立即回显
         JSONObject object = new JSONObject();
-        object.put("imgurl", saveFileName);
+        object.put("retData", saveFileName);
+        object.put("code", "200");
 
         return object.toString();
     }

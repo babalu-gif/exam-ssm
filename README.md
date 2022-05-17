@@ -31,3 +31,4 @@ Github地址：(https://github.com/babalu-gif/exam-ssm.git/
     自动登录
     头像修改
     导入导出
+    安全退出

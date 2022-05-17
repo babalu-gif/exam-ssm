@@ -18,13 +18,6 @@
 <script type="text/javascript">
 
     $(function (){
-        // 给整个浏览器窗口添加键盘按下事件
-        $(window).keydown(function (event){
-            // 如果按的是回车键
-            if (event.keyCode == 13){
-                $("#loginBtn").click();
-            }
-        });
 
         // 给登录按钮添加单击事件
         $("#loginBtn").click(function (){
@@ -41,7 +34,7 @@
                 return;
             }
 
-           $("#msg").text("正在努力验证...");
+            $("#msg").text("正在努力验证...");
 
             // 发送请求
             $.ajax({
@@ -65,6 +58,19 @@
             });
 
         });
+
+        // 给整个浏览器窗口添加键盘按下事件
+        $(window).keydown(function (event){
+            // 如果按的是回车键
+            if (event.keyCode == 13){
+                $("#loginBtn").click();
+            }
+        });
+
+        var is = $("#isRemPwd").prop("checked");
+        if (is){
+            $("#loginBtn").click();
+        }
 
         $("#register").click(function (){
             window.location.href="user/register.jsp";
@@ -91,7 +97,7 @@
                             <c:if test="${not empty cookie.userName and not empty cookie.password}">
                                 <input id="isRemPwd" type="checkbox" checked> 十天内免登录
                             </c:if>
-                            <c:if test="${empty cookie.password or empty cookie.password}">
+                            <c:if test="${empty cookie.userName or empty cookie.password}">
                                 <input id="isRemPwd" type="checkbox"> 十天内免登录
                             </c:if>
                         </label>

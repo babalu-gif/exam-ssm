@@ -15,15 +15,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean set(User user) {
+        boolean flag = true;
         User u = userDao.findUserByName(user.getUser_Name());
         if (u != null){
-           return false;
+            if (u.getUser_Name().equals(user.getUser_Name())){ // 如果修改的名字没有改变，可以修改
+                flag = true;
+            } else {
+                flag = false;
+            }
         }
        int count = userDao.set(user);
         if(count != 1) {
-            return false;
+            flag = false;
         }
-        return true;
+        return flag;
     }
 
     @Override

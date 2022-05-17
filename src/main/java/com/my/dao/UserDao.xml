@@ -29,7 +29,8 @@
             user_Name = #{user_Name},
             user_Password = #{user_Password},
             user_Sex = #{user_Sex},
-            user_Email = #{user_Email}
+            user_Email = #{user_Email},
+            avatar = #{avatar}
         where user_id = #{user_id}
     </update>
 
