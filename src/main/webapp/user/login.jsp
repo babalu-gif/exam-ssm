@@ -104,8 +104,8 @@
                         &nbsp;&nbsp;
                         <span id="msg" style="color: red"></span>
                     </div>
-                    <button type="button" id="loginBtn" class="btn btn-primary btn-lg btn-block"  style="width: 175px; position: relative;top: 50px;">登录</button>
-                    <button type="button" id="register" class="btn btn-primary btn-lg btn-block"  style="width: 175px; position: relative;left: 200px;">注册</button>
+                    <button type="button" id="loginBtn" class="btn btn-primary btn-lg btn-block"  style="width: 175px; left:60px; position: relative;top: 50px; ">登录</button>
+                   <%-- <button type="button" id="register" class="btn btn-primary btn-lg btn-block"  style="width: 175px; position: relative;left: 200px;">注册</button>--%>
                 </div>
             </form>
     </div>

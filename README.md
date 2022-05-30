@@ -1,7 +1,7 @@
 #在线考试管理系统
 ##采用技术
     本系统采用mysql5+tomcat9
-
+    前端采用bootstarp展示数据，使用ajax和jquery异步刷新
     本系统采用java语言（jdk1.8），mysql数据库
 
     本系统涉及html、css和JavaScript前端技术；ssm框架、jquery的异步刷新和等后端技术
@@ -27,8 +27,9 @@ Github地址：(https://github.com/babalu-gif/exam-ssm.git/
     没有对成绩做记录
     功能简单，只有最基础的增删改查
     
-新增功能：
+### 新增功能
     自动登录
     头像修改
     导入导出
     安全退出
+    倒计时（结束自动提交）

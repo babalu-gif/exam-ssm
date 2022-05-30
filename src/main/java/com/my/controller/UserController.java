@@ -194,16 +194,20 @@ public class UserController {
     }
 
     // 用户注册
+    @ResponseBody
     @RequestMapping(value = "/register.do")
-    public String register(HttpServletRequest request, Model model, String myname, String mypwd) {
-        boolean flag = userService.register(myname, mypwd);
+    public Object register(String userName, String password) {
+        boolean flag = userService.register(userName, password);
+        ReturnObject returnObject = new ReturnObject();
         if(flag) {
-            model.addAttribute("is", "注册成功");
+            returnObject.setCode("200");
+            returnObject.setMessage("注册成功");
         }
         else {
-            model.addAttribute("is", "注册失败,用户名已存在");
+            returnObject.setCode("302");
+            returnObject.setMessage("注册失败,用户名已存在");
         }
-        return "register";
+        return returnObject;
     }
 
     @RequestMapping("/exportAllUsers.do")

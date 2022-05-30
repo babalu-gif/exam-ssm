@@ -45,6 +45,7 @@
             </array>
         </property>
     </bean>
+
     <!--配置dao所在的包-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.my.dao"></property>

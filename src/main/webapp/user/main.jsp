@@ -212,9 +212,9 @@
                         <a href="exam/exam.do" target="myright">
                             <li class="one"><span style="color: white;"></span>&nbsp;&nbsp;&nbsp;&nbsp;考试管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: white;"></span> </li>
                         </a>
-                        <a href="http://www.cupde.cn/cms/conksgg/2009.htm" target="myright">
+                       <%-- <a href="https://heguishi.chinaccai.cn/html/detial/faq8.html" target="myright">
                             <li class="one"><span style="color: white"></span>&nbsp;&nbsp;&nbsp;&nbsp;通知公告&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: white;"></span> </li>
-                        </a>
+                        </a>--%>
                     </ul>
                 </div>
             </div>
