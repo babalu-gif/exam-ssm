@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.my.dao.QuestionDao">
+    <sql id="Base_Column_List">
+        questionId, title, optionA, optionB, optionC, optionD, answer
+    </sql>
+
+    <delete id="delete">
+        delete
+            from t_question
+        where questionId in
+        <foreach collection="array" item="ids" open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <update id="update">
+        update t_question
+        set
+            title = #{title},
+            optionA = #{optionA},
+            optionB = #{optionB},
+            optionC = #{optionC},
+            optionD = #{optionD},
+            answer = #{answer}
+        where questionId = #{questionId}
+    </update>
+
+    <select id="getById" resultType="com.my.entity.Question">
+        select
+            <include refid="Base_Column_List"/>
+        from t_question
+        where questionId = #{questionId}
+    </select>
+
+    <delete id="deleteById">
+        delete from
+        t_question
+        where questionId = #{questionId}
+    </delete>
+
+    <insert id="save">
+        insert into
+        t_question
+        (
+             title,
+             optionA,
+             optionB,
+             optionC,
+             optionD,
+             answer
+         )
+        values
+        (
+            #{title},
+            #{optionA},
+            #{optionB},
+            #{optionC},
+            #{optionD},
+            #{answer}
+        )
+    </insert>
+
+    <select id="find" resultType="com.my.entity.Question">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            t_question
+        <where>
+            <if test="title != null and title != ''">
+                and title like '%' #{title} '%'
+            </if>
+        </where>
+        order by questionId asc
+    </select>
+
+    <select id="findAllQuestions" resultType="com.my.entity.Question">
+        select <include refid="Base_Column_List"/>
+        from t_question
+    </select>
+
+    <select id="findQuestionsByIds" resultType="com.my.entity.Question">
+        select <include refid="Base_Column_List"/>
+        from t_question
+        where questionId in
+        <foreach collection="array" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        order by questionId asc
+    </select>
+
+    <insert id="saveQuestions" parameterType="com.my.entity.Question">
+        insert into t_question(title, optionA, optionB, optionC, optionD, answer)
+        values
+        <foreach collection="list" item="question" separator=",">
+            (#{question.title},#{question.optionA},#{question.optionB},#{question.optionC},#{question.optionD},#{question.answer})
+        </foreach>
+    </insert>
+</mapper>
